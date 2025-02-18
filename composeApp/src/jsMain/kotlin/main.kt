@@ -1,6 +1,6 @@
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
-import com.indusjs.cm.App
+import com.indusjs.cm.app.App
 import org.jetbrains.skiko.wasm.onWasmReady
 import kotlinx.browser.document
 

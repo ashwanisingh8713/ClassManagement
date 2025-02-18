@@ -1,4 +1,4 @@
-package com.indusjs.cm
+package com.indusjs.cm.app
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
