@@ -1,14 +1,15 @@
 package com.indusjs.cm.domain.usecase.profile
 
 import com.indusjs.cm.domain.model.profile.ProfileResponse
-import com.indusjs.cm.domain.repo.profile.IProfileRepo
+import com.indusjs.cm.domain.repo.IUserRepository
+import com.indusjs.cm.repository.IProfileRepo
 import com.indusjs.cm.domain.usecase.base.BaseUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 
-class EditProfileUseCase(private val profileRepo: IProfileRepo, dispatcher: CoroutineDispatcher):BaseUseCase<Any?, ProfileResponse>(dispatcher) {
+class EditProfileUseCase(private val repository: IUserRepository, dispatcher: CoroutineDispatcher):BaseUseCase<Any?, ProfileResponse>(dispatcher) {
 
     override suspend fun block(param: Any?): ProfileResponse {
-        return profileRepo.editProfile(param)
+        return repository.editProfile(param)
     }
 
 }

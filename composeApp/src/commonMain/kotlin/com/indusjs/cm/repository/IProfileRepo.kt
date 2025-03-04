@@ -1,4 +1,4 @@
-package com.indusjs.cm.domain.repo.profile
+package com.indusjs.cm.repository
 
 import com.indusjs.cm.domain.model.profile.ProfileResponse
 

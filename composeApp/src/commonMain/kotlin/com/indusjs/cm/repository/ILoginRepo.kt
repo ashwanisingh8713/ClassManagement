@@ -1,4 +1,4 @@
-package com.indusjs.cm.domain.repo.login
+package com.indusjs.cm.repository
 
 import com.indusjs.cm.domain.model.login.ForgotPasswordResponse
 import com.indusjs.cm.domain.model.login.SignInResponse
