@@ -2,7 +2,7 @@ package com.indusjs.cm.di
 
 import com.indusjs.cm.app.viewmodels.login.ForgotPasswordViewModel
 import com.indusjs.cm.app.viewmodels.login.SignInViewModel
-import com.indusjs.cm.app.screens.login.SignUpViewModel
+import com.indusjs.cm.app.presentations.screens.login.SignUpViewModel
 import com.indusjs.cm.app.viewmodels.profile.EditProfileViewModel
 import com.indusjs.cm.app.viewmodels.profile.GetProfileViewModel
 import com.indusjs.cm.data.repo.LoginRepoImpl
@@ -47,7 +47,7 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
 val viewModelModule: Module = module {
     factory { ForgotPasswordViewModel() }
     factory { SignInViewModel(get()) }
-    factory { SignUpViewModel() }
+    factory { SignUpViewModel(get()) }
     factory { EditProfileViewModel(get()) }
     factory { GetProfileViewModel(get()) }
 }
@@ -59,6 +59,7 @@ val useCasesModule: Module = module {
     factory { EditProfileUseCase(get(), get()) }
     factory { GetProfileUseCase(get(), get()) }
 }
+
 val repositoryModule = module {
     single<IUserRepository> { UserRepositoryImpl(get(), get()) }
     single<ILoginRepo> {LoginRepoImpl(get(), get()) }

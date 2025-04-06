@@ -1,4 +1,4 @@
-package com.indusjs.cm.app.mvi
+package com.indusjs.cm.app.presentations.mvi
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
