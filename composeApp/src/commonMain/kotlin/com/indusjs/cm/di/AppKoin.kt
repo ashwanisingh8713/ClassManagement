@@ -90,4 +90,7 @@ val ktorModule = module {
     }
 
     single { "https://rickandmortyapi.com" }
+
 }
+
+fun initKoin() = initKoin {}
