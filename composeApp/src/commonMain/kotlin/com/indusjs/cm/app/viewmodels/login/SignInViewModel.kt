@@ -6,7 +6,7 @@ import com.indusjs.cm.domain.usecase.login.SignInUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class SignInViewModel(private val signInUseCase: SignInUseCase): ViewModel() {
+class SignInViewModel(private val signInUseCase: SignInUseCase?): ViewModel() {
 
     val _successState = MutableStateFlow<String?>(null)
     val successState: StateFlow<String?> get() = _successState
