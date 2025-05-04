@@ -24,6 +24,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import kotlinx.coroutines.Dispatchers
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -40,13 +41,14 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
             ktorModule,
             //mapperModule,
             dispatcherModule,
+            coroutineScopeModule
             //platformModule()
         )
     }
 
 val viewModelModule: Module = module {
     factory { ForgotPasswordViewModel() }
-    factory { SignInViewModel(get()) }
+    factory { SignInViewModel(get(), get()) }
     factory { SignUpViewModel(get()) }
     factory { EditProfileViewModel(get()) }
     factory { GetProfileViewModel(get()) }
@@ -68,6 +70,10 @@ val repositoryModule = module {
 
 val dispatcherModule = module {
     factory { Dispatchers.Default }
+}
+
+val coroutineScopeModule = module {
+    factory { CoroutineScope(Dispatchers.Default) }
 }
 
 val ktorModule = module {

@@ -42,8 +42,7 @@ import org.koin.compose.getKoin
 val LoginScreen:String = "login_screen"
 
 @Composable
-fun LoginScreen(viewModel: SignInViewModel = viewModel { SignInViewModel(signInUseCase = null)},
-                navController: NavHostController) {
+fun LoginScreen(navController: NavHostController) {
 
     val signInViewModel = getKoin().get<SignInViewModel>()
 
@@ -81,7 +80,9 @@ fun LoginScreen(viewModel: SignInViewModel = viewModel { SignInViewModel(signInU
             )
             Spacer(modifier = Modifier.height(10.dp))
             Button(
-                onClick = { viewModel.doLogin() },
+                onClick = {
+                    /*viewModel.doLogin() */
+                          },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(Res.string.sign_in))
