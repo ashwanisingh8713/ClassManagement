@@ -26,7 +26,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import classmanagement.composeapp.generated.resources.*
+import com.indusjs.cm.app.presentations.screens.home.HomeScreen
+import com.indusjs.cm.app.presentations.screens.home.HomeScreen_
 import com.indusjs.cm.app.presentations.screens.login.LoginScreen
+import com.indusjs.cm.app.presentations.screens.login.SignUpScreen
 import com.indusjs.cm.app.viewmodels.login.SignInViewModel
 import com.indusjs.cm.domain.usecase.login.SignInUseCase
 import com.indusjs.cm.theme.AppTheme
@@ -35,87 +38,8 @@ import kotlinx.coroutines.isActive
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.koin.compose.KoinContext
 import org.koin.compose.getKoin
-
-/*@Composable
-internal fun App() = AppTheme {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeDrawing)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(Res.string.cyclone),
-            fontFamily = FontFamily(Font(Res.font.IndieFlower_Regular)),
-            style = MaterialTheme.typography.displayLarge
-        )
-
-        var isRotating by remember { mutableStateOf(false) }
-
-        val rotate = remember { Animatable(0f) }
-        val target = 360f
-        if (isRotating) {
-            LaunchedEffect(Unit) {
-                while (isActive) {
-                    val remaining = (target - rotate.value) / target
-                    rotate.animateTo(target, animationSpec = tween((1_000 * remaining).toInt(), easing = LinearEasing))
-                    rotate.snapTo(0f)
-                }
-            }
-        }
-
-        Image(
-            modifier = Modifier
-                .size(250.dp)
-                .padding(16.dp)
-                .run { rotate(rotate.value) },
-            imageVector = vectorResource(Res.drawable.ic_cyclone),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-            contentDescription = null
-        )
-
-        ElevatedButton(
-            modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 4.dp)
-                .widthIn(min = 200.dp),
-            onClick = { isRotating = !isRotating },
-            content = {
-                Icon(vectorResource(Res.drawable.ic_rotate_right), contentDescription = null)
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(
-                    stringResource(if (isRotating) Res.string.stop else Res.string.run)
-                )
-            }
-        )
-
-        var isDark by LocalThemeIsDark.current
-        val icon = remember(isDark) {
-            if (isDark) Res.drawable.ic_light_mode
-            else Res.drawable.ic_dark_mode
-        }
-
-        ElevatedButton(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { isDark = !isDark },
-            content = {
-                Icon(vectorResource(icon), contentDescription = null)
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(stringResource(Res.string.theme))
-            }
-        )
-
-        val uriHandler = LocalUriHandler.current
-        TextButton(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp).widthIn(min = 200.dp),
-            onClick = { uriHandler.openUri("https://github.com/terrakok") },
-        ) {
-            Text(stringResource(Res.string.open_github))
-        }
-    }
-}*/
-
 
 
 @Composable
@@ -138,6 +62,8 @@ internal fun App(
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
 
+    KoinContext {  }
+
     Scaffold(
         topBar = {
 
@@ -153,6 +79,16 @@ internal fun App(
             ) {
                 composable(route = LoginScreen) {
                     LoginScreen(
+                        navController = navController
+                    )
+                }
+                composable(route = SignUpScreen) {
+                    SignUpScreen(
+                        navController = navController
+                    )
+                }
+                composable(route = HomeScreen) {
+                    HomeScreen_(
                         navController = navController
                     )
                 }

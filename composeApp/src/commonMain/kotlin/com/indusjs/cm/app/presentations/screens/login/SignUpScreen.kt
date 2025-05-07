@@ -31,26 +31,22 @@ import androidx.navigation.NavHostController
 import classmanagement.composeapp.generated.resources.Res
 import classmanagement.composeapp.generated.resources.email
 import classmanagement.composeapp.generated.resources.enter_your_password
-import classmanagement.composeapp.generated.resources.forgot_password
 import classmanagement.composeapp.generated.resources.password
 import classmanagement.composeapp.generated.resources.sign_in
 import classmanagement.composeapp.generated.resources.sign_up
-import com.indusjs.cm.app.presentations.screens.home.HomeScreen
-import com.indusjs.cm.app.viewmodels.login.SignInViewModel
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
-val LoginScreen:String = "login_screen"
+val SignUpScreen:String = "signup_screen"
 
 @Composable
-fun LoginScreen(navController: NavHostController, signInViewModel:SignInViewModel = koinInject<SignInViewModel>()) {
+fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewModel = koinInject<SignUpViewModel>()) {
 
     LaunchedEffect(key1 = Unit) {
-        signInViewModel.effect.collectLatest { effect->
+        signUpViewModel.effect.collectLatest { effect ->
             when(effect) {
-                is LoginContract.Effect.NavigateToSignUpScreen -> navController.navigate(SignUpScreen)
-                is LoginContract.Effect.NavigateToHomeScreen -> navController.navigate(HomeScreen)
+                is LoginContract.Effect.NavigateToSignInScreen -> navController.navigateUp()
                 else -> {}
             }
         }
@@ -61,12 +57,12 @@ fun LoginScreen(navController: NavHostController, signInViewModel:SignInViewMode
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+        ) {
             val username = remember { mutableStateOf(TextFieldValue()) }
             val password = remember { mutableStateOf(TextFieldValue()) }
 
             Text(
-                text = stringResource(Res.string.sign_in),
+                text = stringResource(Res.string.sign_up),
                 style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive)
             )
             Spacer(modifier = Modifier.height(20.dp))
@@ -90,16 +86,7 @@ fun LoginScreen(navController: NavHostController, signInViewModel:SignInViewMode
             Spacer(modifier = Modifier.height(10.dp))
             Button(
                 onClick = {
-                        signInViewModel.setEvent(LoginContract.Event.OnLoginClick(email = "", password = ""))
-                          },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(Res.string.sign_in))
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                onClick = {
-                    signInViewModel.setEvent(event =  LoginContract.Event.OnSignUpClick)
+
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -107,13 +94,12 @@ fun LoginScreen(navController: NavHostController, signInViewModel:SignInViewMode
             }
             Spacer(modifier = Modifier.height(10.dp))
             Button(
-                onClick = {
-                    signInViewModel.setEvent(LoginContract.Event.OnForgotPasswordClick)
-                },
+                onClick = { signUpViewModel.setEvent(LoginContract.Event.OnBackToSignInClick) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(Res.string.forgot_password))
+                Text(stringResource(Res.string.sign_in))
             }
+
             Spacer(modifier = Modifier.height(10.dp))
 
             Row(
@@ -121,17 +107,17 @@ fun LoginScreen(navController: NavHostController, signInViewModel:SignInViewMode
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 IconButton(
-                    onClick = { signInViewModel.setEvent(LoginContract.Event.OnGoToHomeScreenClick) },
+                    onClick = { /* TODO: Sign In with Google */ },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("GoTo HomeScreen")
+                    Text("Sign Up with Google")
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 IconButton(
                     onClick = { /* TODO: Sign In with Facebook */ },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Sign In with Facebook")
+                    Text("Sign Up with Facebook")
                 }
             }
         }

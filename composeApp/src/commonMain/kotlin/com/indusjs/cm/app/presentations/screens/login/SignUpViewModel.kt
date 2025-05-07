@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.StateFlow
 
 class SignUpViewModel(coroutineScope: CoroutineScope): MviBaseViewModel<LoginContract.Event, LoginContract.SignUpState, LoginContract.Effect>(coroutineScope) {
 
-    private val _successState = MutableStateFlow<String?>(null)
-    val successState: StateFlow<String?> get() = _successState
-
     override fun createInitialState(): LoginContract.SignUpState =
         LoginContract.SignUpState(loginResponse = ResourceUiState.Idle)
 
     override fun handleEvent(event: LoginContract.Event) {
-
+        when(event) {
+            is LoginContract.Event.OnBackToSignInClick -> setEffect { LoginContract.Effect.NavigateToSignInScreen }
+            else -> { }
+        }
     }
 
 

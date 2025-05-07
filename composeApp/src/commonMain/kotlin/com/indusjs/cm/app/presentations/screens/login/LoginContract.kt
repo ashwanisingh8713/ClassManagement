@@ -12,6 +12,8 @@ interface LoginContract {
         data object OnTryCheckAgainClick : Event
         data object OnSignUpClick : Event
         data object OnForgotPasswordClick : Event
+        data object OnBackToSignInClick : Event
+        data object OnGoToHomeScreenClick : Event
         data class OnLoginClick(val email: String, val password: String) : Event
     }
 
@@ -28,5 +30,6 @@ interface LoginContract {
         data class NavigateToForgotPasswordScreen(val email: String) : Effect
         data class NavigateToHomeScreen(val email: String) : Effect
         data object NavigateToSignUpScreen : Effect
+        data object NavigateToSignInScreen : Effect
     }
 }
