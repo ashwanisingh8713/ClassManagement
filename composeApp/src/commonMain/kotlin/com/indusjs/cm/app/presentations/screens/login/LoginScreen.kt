@@ -50,7 +50,11 @@ fun LoginScreen(navController: NavHostController, signInViewModel:SignInViewMode
         signInViewModel.effect.collectLatest { effect->
             when(effect) {
                 is LoginContract.Effect.NavigateToSignUpScreen -> navController.navigate(SignUpScreen)
-                is LoginContract.Effect.NavigateToHomeScreen -> navController.navigate(HomeScreen)
+                is LoginContract.Effect.NavigateToHomeScreen -> navController.navigate(HomeScreen) {
+                    popUpTo(LoginScreen) {
+                        inclusive = true
+                    }
+                }
                 else -> {}
             }
         }

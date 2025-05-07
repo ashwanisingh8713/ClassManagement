@@ -144,7 +144,7 @@ fun TopAppBarSection() {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                Text(text = "Jonathan White", style = MaterialTheme.typography.headlineSmall)
+                Text(text = "Person Name", style = MaterialTheme.typography.headlineSmall)
                 Text(text = "Society Name", style = MaterialTheme.typography.bodyMedium)
             }
         }

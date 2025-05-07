@@ -11,7 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,6 +38,11 @@ import classmanagement.composeapp.generated.resources.enter_your_password
 import classmanagement.composeapp.generated.resources.password
 import classmanagement.composeapp.generated.resources.sign_in
 import classmanagement.composeapp.generated.resources.sign_up
+import compose.icons.AllIcons
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.ArrowLeft
+import compose.icons.feathericons.Feather
+import compose.icons.feathericons.GitBranch
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -97,7 +106,15 @@ fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewMo
                 onClick = { signUpViewModel.setEvent(LoginContract.Event.OnBackToSignInClick) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(Res.string.sign_in))
+                Row {
+                    Icon(
+                        imageVector = FeatherIcons.ArrowLeft,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(modifier = Modifier.padding(top = 2.dp), text = stringResource(Res.string.sign_in))
+                }
             }
 
             Spacer(modifier = Modifier.height(10.dp))
