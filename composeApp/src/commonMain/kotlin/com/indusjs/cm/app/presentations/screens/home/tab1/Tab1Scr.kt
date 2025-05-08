@@ -1,4 +1,4 @@
-package com.indusjs.cm.app.presentations.screens.home
+package com.indusjs.cm.app.presentations.screens.home.tab1
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,14 +18,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.MailOutline
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +36,6 @@ import classmanagement.composeapp.generated.resources.ic_facility
 import classmanagement.composeapp.generated.resources.ic_parking
 import classmanagement.composeapp.generated.resources.ic_payments
 import classmanagement.composeapp.generated.resources.ic_post
-import classmanagement.composeapp.generated.resources.ic_profile
 import classmanagement.composeapp.generated.resources.ic_tenant
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource

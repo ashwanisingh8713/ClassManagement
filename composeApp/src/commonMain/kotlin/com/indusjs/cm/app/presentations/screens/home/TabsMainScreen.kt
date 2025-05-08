@@ -2,11 +2,9 @@ package com.indusjs.cm.app.presentations.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,7 +25,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,29 +34,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import classmanagement.composeapp.generated.resources.Res
 import classmanagement.composeapp.generated.resources.ic_profile
+import com.indusjs.cm.app.presentations.screens.home.tab1.Tab1Screen
+import com.indusjs.cm.app.presentations.screens.home.tab2.Tab2Screen
+import com.indusjs.cm.app.presentations.screens.home.tab3.Tab3Screen
+import com.indusjs.cm.app.presentations.screens.home.tab4.Tab4Screen
+import com.indusjs.cm.app.presentations.screens.home.tab5.Tab5Screen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-val HomeScreen: String = "home_screen"
+val TabsMainScreen: String = "tabs_main_screen"
 
-@Composable
-fun HomeScreen_(navController: NavHostController) {
-    MainApp()
-}
 
 // Define data class for Bottom Navigation items
-data class BottomNavItem(val tabId:Int, val title: String, val icon: androidx.compose.ui.graphics.vector.ImageVector, val route: String)
+private data class BottomNavItem(val tabId:Int, val title: String, val icon: androidx.compose.ui.graphics.vector.ImageVector, val route: String)
 
 @Composable
-fun MainApp() {
+fun TabsScreen(navController: NavHostController) {
     // Create a list of BottomNavItem
     val items = listOf(
         BottomNavItem(0,"Home", Icons.Filled.Home, "home"),
@@ -164,5 +160,5 @@ fun TopAppBarSection() {
 @Preview
 @Composable
 fun DefaultPreview() {
-    MainApp()
+    TabsScreen(navController = rememberNavController())
 }

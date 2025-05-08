@@ -1,4 +1,4 @@
-package com.indusjs.cm.app.presentations.screens.home
+package com.indusjs.cm.app.presentations.screens.home.tab2
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

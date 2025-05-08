@@ -1,4 +1,4 @@
-package com.indusjs.cm.app.presentations.screens.home
+package com.indusjs.cm.app.presentations.screens.home.tab3
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,12 +12,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun Tab4Screen() {
+fun Tab3Screen() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("This is Tab 4", style = TextStyle(fontSize = 24.sp, textAlign = TextAlign.Center))
+        Text("This is Tab 3", style = TextStyle(fontSize = 24.sp, textAlign = TextAlign.Center))
     }
 }
