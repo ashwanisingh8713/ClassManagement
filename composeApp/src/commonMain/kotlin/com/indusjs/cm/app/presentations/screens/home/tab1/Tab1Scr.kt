@@ -31,6 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import classmanagement.composeapp.generated.resources.Res
 import classmanagement.composeapp.generated.resources.ic_facility
 import classmanagement.composeapp.generated.resources.ic_parking
@@ -40,29 +43,92 @@ import classmanagement.composeapp.generated.resources.ic_tenant
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
+val TAB1_ROOT_PAGE: String = "TAB1_ROOT_PAGE"
+val TAB1_POST_PAGE: String = "TAB1_POST_PAGE"
+val TAB1_PAYMENT_PAGE: String = "TAB1_PAYMENT_PAGE"
+val TAB1_FACILITY_PAGE: String = "TAB1_FACILITY_PAGE"
+val TAB1_TENANT_PAGE: String = "TAB1_TENANT_PAGE"
+val TAB1_PARKING_PAGE: String = "TAB1_PARKING_PAGE"
+
 @Composable
-fun Tab1Screen() {
-    SocietyManagementScreen()
+fun Tab1Screen(tab1Navigator: NavHostController) {
+
+    val onPostClick:() -> Unit = {
+        tab1Navigator.navigate(TAB1_POST_PAGE)
+    }
+    val onPaymentClick:() -> Unit = {
+        tab1Navigator.navigate(TAB1_PAYMENT_PAGE)
+    }
+
+    val onFacilityClick:() -> Unit = {
+        tab1Navigator.navigate(TAB1_FACILITY_PAGE)
+    }
+
+    val onTenantClick:() -> Unit = {
+        tab1Navigator.navigate(TAB1_TENANT_PAGE)
+    }
+    val onParkingClick:() -> Unit = {
+        tab1Navigator.navigate(TAB1_PARKING_PAGE)
+    }
+
+    NavHost(
+        navController = tab1Navigator,
+        startDestination = TAB1_ROOT_PAGE,
+    ) {
+        composable(TAB1_ROOT_PAGE) {
+            SocietyManagementScreen(onPostClick = onPostClick, onPaymentClick = onPaymentClick,
+                onFacilityClick = onFacilityClick, onTenantClick = onTenantClick, onParkingClick = onParkingClick)
+        }
+        composable(TAB1_POST_PAGE) {
+            Tab1_PostScreen() {
+                tab1Navigator.popBackStack()
+            }
+        }
+        composable(TAB1_PAYMENT_PAGE) {
+            Tab1_PaymentScreen() {
+                tab1Navigator.popBackStack()
+            }
+        }
+        composable(TAB1_FACILITY_PAGE) {
+            Tab1_FacilityScreen() {
+                tab1Navigator.popBackStack()
+            }
+        }
+        composable(TAB1_TENANT_PAGE) {
+            Tab1_TenantScreen() {
+                tab1Navigator.popBackStack()
+            }
+        }
+        composable(TAB1_PARKING_PAGE) {
+            Tab1_ParkingScreen() {
+                tab1Navigator.popBackStack()
+            }
+        }
+    }
+
 }
 
 @Composable
-fun SocietyManagementScreen() {
+fun SocietyManagementScreen(onPostClick:() -> Unit = {}, onPaymentClick:() -> Unit = {},
+                            onFacilityClick:()->Unit = {}, onTenantClick:()->Unit = {},
+                            onParkingClick:()->Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        QuickActionsBar()
+        QuickActionsBar(onPostClick = onPostClick, onPaymentClick = onPaymentClick,
+            onFacilityClick = onFacilityClick, onTenantClick = onTenantClick, onParkingClick = onParkingClick)
         TenantCard()
         Spacer(modifier = Modifier.weight(1f))
-        // BottomNavigationBar (Not included as per request)
     }
 }
 
 
 
 @Composable
-fun QuickActionsBar() {
+fun QuickActionsBar(onPostClick:() -> Unit, onPaymentClick:() -> Unit, onFacilityClick:()->Unit = {}, onTenantClick:()->Unit = {},
+                    onParkingClick:()->Unit = {}) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -70,17 +136,17 @@ fun QuickActionsBar() {
         horizontalArrangement = Arrangement.SpaceAround,
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
-        item { QuickActionItem(icon = Res.drawable.ic_post, label = "Post") } // Replace with actual icon resource
-        item { QuickActionItem(icon =  Res.drawable.ic_payments, label = "Payments") } // Replace with actual icon resource
-        item { QuickActionItem(icon =  Res.drawable.ic_facility, label = "Facility") } // Replace with actual icon resource
-        item { QuickActionItem(icon =  Res.drawable.ic_tenant, label = "Tenant") } // Replace with actual icon resource
-        item { QuickActionItem(icon =  Res.drawable.ic_parking, label = "Parking") } // Replace with actual icon resource
+        item { QuickActionItem(onClick = onPostClick, icon = Res.drawable.ic_post, label = "Post") } // Replace with actual icon resource
+        item { QuickActionItem(onClick = onPaymentClick, icon =  Res.drawable.ic_payments, label = "Payments") } // Replace with actual icon resource
+        item { QuickActionItem(onClick = onFacilityClick, icon =  Res.drawable.ic_facility, label = "Facility") } // Replace with actual icon resource
+        item { QuickActionItem(onClick = onTenantClick, icon =  Res.drawable.ic_tenant, label = "Tenant") } // Replace with actual icon resource
+        item { QuickActionItem(onClick = onParkingClick, icon =  Res.drawable.ic_parking, label = "Parking") } // Replace with actual icon resource
         // Add more quick actions as needed
     }
 }
 
 @Composable
-fun QuickActionItem(
+fun QuickActionItem( onClick:() -> Unit = {},
     icon: DrawableResource,
     label: String
 ) {
@@ -89,6 +155,7 @@ fun QuickActionItem(
         verticalArrangement = Arrangement.Center
     ) {
         Card(
+            onClick = {onClick()},
             modifier = Modifier.size(60.dp),
             shape = CircleShape,
             colors = CardDefaults.cardColors(

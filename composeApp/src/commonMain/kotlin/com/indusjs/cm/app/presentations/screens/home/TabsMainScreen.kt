@@ -56,6 +56,13 @@ private data class BottomNavItem(val tabId:Int, val title: String, val icon: and
 
 @Composable
 fun TabsScreen(navController: NavHostController) {
+
+    val tab1Navigator:NavHostController = rememberNavController()
+    val tab2Navigator:NavHostController = rememberNavController()
+    val tab3Navigator:NavHostController = rememberNavController()
+    val tab4Navigator:NavHostController = rememberNavController()
+    val tab5Navigator:NavHostController = rememberNavController()
+
     // Create a list of BottomNavItem
     val items = listOf(
         BottomNavItem(0,"Home", Icons.Filled.Home, "home"),
@@ -107,11 +114,11 @@ fun TabsScreen(navController: NavHostController) {
                     color = Color.White
                 ) {
                     when (selectedItem.value.tabId) {
-                        0 -> Tab1Screen()
-                        1 -> Tab2Screen()
-                        2 -> Tab3Screen()
-                        3 -> Tab4Screen()
-                        4 -> Tab5Screen()
+                        0 -> Tab1Screen(tab1Navigator)
+                        1 -> Tab2Screen(tab2Navigator)
+                        2 -> Tab3Screen(tab3Navigator)
+                        3 -> Tab4Screen(tab4Navigator)
+                        4 -> Tab5Screen(tab5Navigator)
                     }
                 }
             }

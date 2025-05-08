@@ -10,9 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+
+val TAB5_ROOT_PAGE: String = "TAB5_ROOT_PAGE"
 
 @Composable
-fun Tab5Screen() {
+fun Tab5Screen(tab5Navigator: NavHostController) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
