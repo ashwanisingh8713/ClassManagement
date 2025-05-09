@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -65,11 +67,11 @@ fun TabsScreen(navController: NavHostController) {
 
     // Create a list of BottomNavItem
     val items = listOf(
-        BottomNavItem(0,"Home", Icons.Filled.Home, "home"),
-        BottomNavItem(1,"Search", Icons.Filled.Search, "search"),
-        BottomNavItem(2,"Cart", Icons.Filled.ShoppingCart, "cart"),
-        BottomNavItem(3,"Profile", Icons.Filled.Person, "profile"),
-        BottomNavItem(4,"Settings", Icons.Filled.Settings, "settings")
+        BottomNavItem(0,"Tab1", Icons.Filled.AccountCircle, "tab1"),
+        BottomNavItem(1,"Community", Icons.Filled.Person, "search"),
+        BottomNavItem(2,"Home", Icons.Filled.Home, "cart"),
+        BottomNavItem(3,"Search", Icons.Filled.Search, "search"),
+        BottomNavItem(4,"More", Icons.Filled.Menu, "More")
     )
 
     // Use remember to survive configuration changes
