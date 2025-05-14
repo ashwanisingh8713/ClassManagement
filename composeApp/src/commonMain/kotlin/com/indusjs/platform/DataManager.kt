@@ -2,12 +2,18 @@ package com.indusjs.platform
 
 class DataManager(private val dataStorage: IDataStorage, private val settingsStorage: ISettingsStorage) {
 
-    suspend fun saveUserLoggedIn() {
-        return dataStorage.saveData("isUserLoggedIn", "true")
+    suspend fun saveUserLoggedIn(boolean: Boolean) {
+        return dataStorage.saveData("isUserLoggedIn", if(boolean) "true" else "false")
     }
 
     suspend fun isUserLoggedIn(): Boolean {
-        return dataStorage.loadData("isUserLoggedIn") != null
+        val isLoggedIn = dataStorage.loadData("isUserLoggedIn")
+        if (isLoggedIn == null) {
+            return false
+        } else if (isLoggedIn == "true") {
+            return true
+        }
+        return false
     }
 
     suspend fun saveUserToken(token: String) {
@@ -16,6 +22,13 @@ class DataManager(private val dataStorage: IDataStorage, private val settingsSto
 
     suspend fun getUserToken(): String? {
         return dataStorage.loadData("user_token")
+    }
+
+    suspend fun saveUserData(userData: String) {
+        dataStorage.saveData("user_data", userData)
+    }
+    suspend fun getUserData(): String? {
+        return dataStorage.loadData("user_data")
     }
 
     suspend fun saveAppTheme(theme: String) {

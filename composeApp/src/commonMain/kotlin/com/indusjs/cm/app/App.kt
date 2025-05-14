@@ -85,9 +85,6 @@ internal fun App(
                     .padding(innerPadding)
             ) {
                 composable(route = LoginScreen) {
-//                    LoginScreen(
-//                        navController = navController
-//                    )
                     SignInScreenE(navController = navController)
                 }
                 composable(route = SignUpScreen) {

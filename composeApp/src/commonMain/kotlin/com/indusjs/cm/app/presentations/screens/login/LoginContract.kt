@@ -13,7 +13,7 @@ interface LoginContract {
         data object OnSignUpClick : Event
         data object OnForgotPasswordClick : Event
         data object OnBackToSignInClick : Event
-        data object OnGoToHomeScreenClick : Event
+        data class OnGoToHomeScreenClick(val signInResponse: SignInResponse) : Event
         data class OnLoginClick(val email: String, val password: String) : Event
     }
 
@@ -28,7 +28,7 @@ interface LoginContract {
 
     sealed interface Effect : IUiEffect {
         data class NavigateToForgotPasswordScreen(val email: String) : Effect
-        data class NavigateToHomeScreen(val email: String) : Effect
+        data class NavigateToHomeScreen(val signInResponse: SignInResponse) : Effect
         data object NavigateToSignUpScreen : Effect
         data object NavigateToSignInScreen : Effect
         data object IDLE : Effect

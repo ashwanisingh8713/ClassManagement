@@ -125,7 +125,9 @@ fun LoginScreen(navController: NavHostController, signInViewModel:SignInViewMode
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 IconButton(
-                    onClick = { signInViewModel.setEvent(LoginContract.Event.OnGoToHomeScreenClick) },
+                    onClick = {
+                        //signInViewModel.setEvent(LoginContract.Event.OnGoToHomeScreenClick)
+                              },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("GoTo HomeScreen")

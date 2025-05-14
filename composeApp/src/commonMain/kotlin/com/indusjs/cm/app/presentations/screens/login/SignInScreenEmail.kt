@@ -51,6 +51,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.getKoin
 
@@ -200,7 +201,17 @@ fun SignInScreenE(navController: NavHostController,
                 is LoginContract.Effect.NavigateToHomeScreen -> {
                     // Save User logged In Status
                     scope.launch {
-                        dataManager.saveUserLoggedIn()
+                        dataManager.saveUserLoggedIn(true)
+                    }
+
+                    // Save User Data & Token
+                    effect.signInResponse.token?.let { token ->
+                        // Save User Token
+                        scope.launch {
+                            val jsonString = Json.encodeToString(SignInResponse.serializer(), effect.signInResponse)
+                            dataManager.saveUserData(jsonString)
+                            dataManager.saveUserToken(token)
+                        }
                     }
                     // Launching the Tab Main screen
                     withContext(Dispatchers.Main) {
@@ -225,22 +236,25 @@ fun SignInScreenE(navController: NavHostController,
             when(state.loginResponse) {
                 is ResourceUiState.Success -> {
                     println("Ashwani Success...")
-                    // Show loading indicator
-                    signInViewModel.setEvent(LoginContract.Event.OnGoToHomeScreenClick)
+                    // Show Success
+                    signInViewModel.setEvent(LoginContract.Event.OnGoToHomeScreenClick(state.loginResponse.data))
                 }
                 is ResourceUiState.Loading -> {
                     // Show loading indicator
                     println("Ashwani Loading...")
                 }
                 is ResourceUiState.Empty -> {
-                    // Show loading indicator
+                    // Show Empty
                     println("Ashwani Empty...")
                 }
                 is ResourceUiState.Idle -> {
                     // Show loading indicator
-                    println("Ashwani Idel...")
+                    println("Ashwani Idle...")
                 }
-                is ResourceUiState.Error -> {}
+                is ResourceUiState.Error -> {
+                    // Show Error
+                    println("Ashwani Error...")
+                }
                 else -> {}
             }
         }

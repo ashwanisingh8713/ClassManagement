@@ -1,6 +1,6 @@
 package com.indusjs.cm.app.presentations.screens.home
 
-import androidx.compose.animation.AnimatedVisibility
+import SignInResponse
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,8 +19,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.IconButton
@@ -33,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,8 +47,12 @@ import com.indusjs.cm.app.presentations.screens.home.tab2.Tab2Screen
 import com.indusjs.cm.app.presentations.screens.home.tab3.Tab3Screen
 import com.indusjs.cm.app.presentations.screens.home.tab4.Tab4Screen
 import com.indusjs.cm.app.presentations.screens.home.tab5.Tab5Screen
+import com.indusjs.platform.DataManager
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.getKoin
 
 val TabsMainScreen: String = "tabs_main_screen"
 
@@ -60,6 +63,8 @@ private data class BottomNavItem(val tabId:Int, val title: String, val icon: and
 @Composable
 fun TabsScreen(navController: NavHostController) {
 
+    val scope = rememberCoroutineScope()
+
     val topbarVisibility = remember { mutableStateOf(true) }
 
     val tab1Navigator:NavHostController = rememberNavController()
@@ -67,6 +72,18 @@ fun TabsScreen(navController: NavHostController) {
     val tab3Navigator:NavHostController = rememberNavController()
     val tab4Navigator:NavHostController = rememberNavController()
     val tab5Navigator:NavHostController = rememberNavController()
+
+    val dataManager = getKoin().get<DataManager>()
+    scope.launch {
+        val userDataJson = dataManager.getUserData()
+        if (userDataJson != null) {
+            val user = Json.decodeFromString<SignInResponse>(userDataJson)
+            println("User Data: $userDataJson $user")
+        } else {
+            println("No user data found.")
+        }
+    }
+
 
     // Create a list of BottomNavItem
     val items = listOf(
