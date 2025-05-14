@@ -77,6 +77,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqlDelight.driver.android)
             implementation(libs.koin.android)
+            implementation("androidx.datastore:datastore-preferences:1.1.6")
         }
 
         jsMain.dependencies {

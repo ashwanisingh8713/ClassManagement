@@ -17,9 +17,18 @@ import classmanagement.composeapp.generated.resources.*
 import com.indusjs.cm.app.presentations.screens.home.TabsMainScreen
 import com.indusjs.cm.app.presentations.screens.home.TabsScreen
 import com.indusjs.cm.app.presentations.screens.login.LoginScreen
+import com.indusjs.cm.app.presentations.screens.login.SignInScreen
+import com.indusjs.cm.app.presentations.screens.login.SignInScreenE
 import com.indusjs.cm.app.presentations.screens.login.SignUpScreen
+import com.indusjs.platform.DataManager
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.KoinContext
+import org.koin.compose.getKoin
+import kotlin.coroutines.CoroutineContext
 
 
 @Composable
@@ -42,8 +51,26 @@ internal fun App(
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-    KoinContext {  }
+    // Get DataManager instance from Koin
+     val dataManager = getKoin().get<DataManager>()
 
+    var isUserLoggedIn by remember { mutableStateOf(false) }
+    var isLoadedUI by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    scope.launch {
+        isUserLoggedIn = dataManager.isUserLoggedIn()
+        isLoadedUI = true
+    }
+
+    if(!isLoadedUI) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize()
+        )
+        return
+    }
     Scaffold(
         topBar = {
 
@@ -51,16 +78,17 @@ internal fun App(
         content = {innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = LoginScreen,
+                startDestination = if(isUserLoggedIn) TabsMainScreen else LoginScreen,
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(innerPadding)
             ) {
                 composable(route = LoginScreen) {
-                    LoginScreen(
-                        navController = navController
-                    )
+//                    LoginScreen(
+//                        navController = navController
+//                    )
+                    SignInScreenE(navController = navController)
                 }
                 composable(route = SignUpScreen) {
                     SignUpScreen(

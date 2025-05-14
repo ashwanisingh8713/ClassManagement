@@ -1,4 +1,4 @@
-package com.indusjs.cm.app.presentations.screens.home.tab3
+package com.indusjs.cm.app.presentations.screens.home.tab2
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,17 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-
-val TAB3_ROOT_PAGE: String = "TAB3_ROOT_PAGE"
+import androidx.navigation.NavController
 
 @Composable
-fun Tab3Screen(tab5Navigator: NavHostController, topbarVisibility: MutableState<Boolean>) {
+fun EmergencyContactsScreen(tab5NavController: NavController, topbarVisibility: MutableState<Boolean>, onBackButtonClick:()->Unit = {}) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("This is Tab 3", style = TextStyle(fontSize = 24.sp, textAlign = TextAlign.Center))
+        Text("This is Emergency Contacts Screen", style = TextStyle(fontSize = 24.sp, textAlign = TextAlign.Center))
     }
 }

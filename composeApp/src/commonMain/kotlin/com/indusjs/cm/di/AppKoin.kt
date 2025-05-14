@@ -22,12 +22,14 @@ import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.Dispatchers
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
@@ -39,12 +41,14 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
             useCasesModule,
             repositoryModule,
             ktorModule,
-            //mapperModule,
+//            baseUrlModule,
             dispatcherModule,
             coroutineScopeModule
             //platformModule()
         )
     }
+
+
 
 val viewModelModule: Module = module {
     factory { ForgotPasswordViewModel() }
@@ -62,9 +66,16 @@ val useCasesModule: Module = module {
     factory { GetProfileUseCase(get(), get()) }
 }
 
+val baseUrlModule:Module = module {
+//    single<String>(named("BaseUrl")) { "https://rickandmortyapi.com" }
+    single<String>(named("BaseUrl")) { "https://rickandmortyapi.com" }
+    single<String>(named("thg")) {  "https://app.thehindu.com/hindu/service/api_v1.006" }
+}
+
 val repositoryModule = module {
     single<IUserRepository> { UserRepositoryImpl(get(), get()) }
-    single<ILoginRepo> {LoginRepoImpl(get(), get()) }
+    single<ILoginRepo> {LoginRepoImpl(get() , get()) }
+//    single<ILoginRepo> { LoginRepoImpl(getKoin(){named("BaseUrl")}, get()) }
     single<IProfileRepo> { ProfileRepoImpl(get(), get()) }
 }
 
@@ -90,13 +101,21 @@ val ktorModule = module {
             }
             install(Logging) {
                 logger = Logger.DEFAULT
-                level = LogLevel.ALL
+                level = LogLevel.HEADERS
+                filter { request ->
+                    request.url.host.contains("ktor.io")
+                }
+                sanitizeHeader { header ->
+                    header == HttpHeaders.Authorization
+                }
             }
         }
     }
 
-    single { "https://rickandmortyapi.com" }
-
+    single { "http://147.79.70.208" }
 }
 
-fun initKoin() = initKoin {}
+fun initKoin(module: Module) {
+    val koinApp = initKoin {}
+    koinApp.modules(module)
+}

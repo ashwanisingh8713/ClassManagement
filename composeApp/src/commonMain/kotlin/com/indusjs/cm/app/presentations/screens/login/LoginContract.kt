@@ -1,15 +1,15 @@
 package com.indusjs.cm.app.presentations.screens.login
 
+import SignInResponse
 import com.indusjs.cm.app.model.ResourceUiState
 import com.indusjs.cm.app.presentations.mvi.IUiEffect
 import com.indusjs.cm.app.presentations.mvi.IUiEvent
 import com.indusjs.cm.app.presentations.mvi.IUiState
-import com.indusjs.cm.domain.model.login.SignInResponse
-import com.indusjs.cm.domain.model.login.SignupResponse
+import com.indusjs.cm.domain.model.login.SignUpResponse
 
 interface LoginContract {
     sealed interface Event : IUiEvent {
-        data object OnTryCheckAgainClick : Event
+        data class OnTryCheckAgainClick(val email: String, val password: String) : Event
         data object OnSignUpClick : Event
         data object OnForgotPasswordClick : Event
         data object OnBackToSignInClick : Event
@@ -22,7 +22,7 @@ interface LoginContract {
     ) : IUiState
 
     data class SignUpState(
-        val loginResponse: ResourceUiState<SignupResponse>
+        val loginResponse: ResourceUiState<SignUpResponse>
     ) : IUiState
 
 
@@ -31,5 +31,6 @@ interface LoginContract {
         data class NavigateToHomeScreen(val email: String) : Effect
         data object NavigateToSignUpScreen : Effect
         data object NavigateToSignInScreen : Effect
+        data object IDLE : Effect
     }
 }

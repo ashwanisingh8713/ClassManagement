@@ -1,5 +1,6 @@
 package com.indusjs.cm.app.presentations.screens.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -59,6 +60,8 @@ private data class BottomNavItem(val tabId:Int, val title: String, val icon: and
 @Composable
 fun TabsScreen(navController: NavHostController) {
 
+    val topbarVisibility = remember { mutableStateOf(true) }
+
     val tab1Navigator:NavHostController = rememberNavController()
     val tab2Navigator:NavHostController = rememberNavController()
     val tab3Navigator:NavHostController = rememberNavController()
@@ -68,7 +71,7 @@ fun TabsScreen(navController: NavHostController) {
     // Create a list of BottomNavItem
     val items = listOf(
         BottomNavItem(0,"Tab1", Icons.Filled.AccountCircle, "tab1"),
-        BottomNavItem(1,"Community", Icons.Filled.Person, "search"),
+        BottomNavItem(1,"Community", Icons.Filled.Person, "community"),
         BottomNavItem(2,"Home", Icons.Filled.Home, "cart"),
         BottomNavItem(3,"Search", Icons.Filled.Search, "search"),
         BottomNavItem(4,"More", Icons.Filled.Menu, "More")
@@ -77,6 +80,12 @@ fun TabsScreen(navController: NavHostController) {
     // Use remember to survive configuration changes
     val selectedItem = remember { mutableStateOf(items[0]) }
         Scaffold(modifier = Modifier.height(1.dp), // here I need to check
+            topBar = {
+                TopAppBarSection()
+                    /*if(topbarVisibility.value) {
+                        TopAppBarSection()
+                    }*/
+                 },
             // Bottom navigation bar
             bottomBar = {
                 NavigationBar(
@@ -106,7 +115,6 @@ fun TabsScreen(navController: NavHostController) {
                     }
                 }
             },
-            topBar = {TopAppBarSection()},
             content = { paddingValues ->
                 // Content of each screen based on the selected item
                 Surface(
@@ -116,11 +124,11 @@ fun TabsScreen(navController: NavHostController) {
                     color = Color.White
                 ) {
                     when (selectedItem.value.tabId) {
-                        0 -> Tab1Screen(tab1Navigator)
-                        1 -> Tab2Screen(tab2Navigator)
-                        2 -> Tab3Screen(tab3Navigator)
-                        3 -> Tab4Screen(tab4Navigator)
-                        4 -> Tab5Screen(tab5Navigator)
+                        0 -> Tab1Screen(tab1Navigator, topbarVisibility)
+                        1 -> Tab2Screen(tab2Navigator, topbarVisibility)
+                        2 -> Tab3Screen(tab3Navigator, topbarVisibility)
+                        3 -> Tab4Screen(tab4Navigator, topbarVisibility)
+                        4 -> Tab5Screen(tab5Navigator, topbarVisibility)
                     }
                 }
             }

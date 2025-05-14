@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,24 +51,37 @@ val TAB1_FACILITY_PAGE: String = "TAB1_FACILITY_PAGE"
 val TAB1_TENANT_PAGE: String = "TAB1_TENANT_PAGE"
 val TAB1_PARKING_PAGE: String = "TAB1_PARKING_PAGE"
 
+private fun showTopBar(topbarVisibility: MutableState<Boolean>, ) {
+    topbarVisibility.value = true
+}
+
+private fun hideTopBar(topbarVisibility: MutableState<Boolean>, ) {
+    topbarVisibility.value = false
+}
+
 @Composable
-fun Tab1Screen(tab1Navigator: NavHostController) {
+fun Tab1Screen(tab1Navigator: NavHostController, topbarVisibility: MutableState<Boolean>) {
 
     val onPostClick:() -> Unit = {
         tab1Navigator.navigate(TAB1_POST_PAGE)
+        hideTopBar(topbarVisibility)
     }
     val onPaymentClick:() -> Unit = {
+        hideTopBar(topbarVisibility)
         tab1Navigator.navigate(TAB1_PAYMENT_PAGE)
     }
 
     val onFacilityClick:() -> Unit = {
+        hideTopBar(topbarVisibility)
         tab1Navigator.navigate(TAB1_FACILITY_PAGE)
     }
 
     val onTenantClick:() -> Unit = {
+        hideTopBar(topbarVisibility)
         tab1Navigator.navigate(TAB1_TENANT_PAGE)
     }
     val onParkingClick:() -> Unit = {
+        hideTopBar(topbarVisibility)
         tab1Navigator.navigate(TAB1_PARKING_PAGE)
     }
 
@@ -82,25 +96,30 @@ fun Tab1Screen(tab1Navigator: NavHostController) {
         composable(TAB1_POST_PAGE) {
             Tab1_PostScreen() {
                 tab1Navigator.popBackStack()
+                showTopBar(topbarVisibility)
             }
         }
         composable(TAB1_PAYMENT_PAGE) {
             Tab1_PaymentScreen() {
+                showTopBar(topbarVisibility)
                 tab1Navigator.popBackStack()
             }
         }
         composable(TAB1_FACILITY_PAGE) {
             Tab1_FacilityScreen() {
+                showTopBar(topbarVisibility)
                 tab1Navigator.popBackStack()
             }
         }
         composable(TAB1_TENANT_PAGE) {
             Tab1_TenantScreen() {
+                showTopBar(topbarVisibility)
                 tab1Navigator.popBackStack()
             }
         }
         composable(TAB1_PARKING_PAGE) {
             Tab1_ParkingScreen() {
+                showTopBar(topbarVisibility)
                 tab1Navigator.popBackStack()
             }
         }

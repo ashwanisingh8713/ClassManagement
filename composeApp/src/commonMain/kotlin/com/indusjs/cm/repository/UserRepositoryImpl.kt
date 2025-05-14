@@ -1,8 +1,8 @@
 package com.indusjs.cm.repository
 
+import SignInResponse
 import com.indusjs.cm.domain.model.login.ForgotPasswordResponse
-import com.indusjs.cm.domain.model.login.SignInResponse
-import com.indusjs.cm.domain.model.login.SignupResponse
+import com.indusjs.cm.domain.model.login.SignUpResponse
 import com.indusjs.cm.domain.model.profile.ProfileResponse
 import com.indusjs.cm.domain.repo.IUserRepository
 
@@ -11,7 +11,7 @@ class UserRepositoryImpl(private val loginRepo: ILoginRepo, private val profileR
         return loginRepo.signIn(param)
     }
 
-    override suspend fun signUp(param: Any?): SignupResponse {
+    override suspend fun signUp(param: Any?): SignUpResponse {
         return loginRepo.signUp(param)
     }
 

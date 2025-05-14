@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -15,7 +16,7 @@ import androidx.navigation.NavHostController
 val TAB5_ROOT_PAGE: String = "TAB5_ROOT_PAGE"
 
 @Composable
-fun Tab5Screen(tab5Navigator: NavHostController) {
+fun Tab5Screen(tab5Navigator: NavHostController, topbarVisibility: MutableState<Boolean>) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

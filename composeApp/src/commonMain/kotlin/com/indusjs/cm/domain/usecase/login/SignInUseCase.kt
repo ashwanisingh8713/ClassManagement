@@ -1,8 +1,7 @@
 package com.indusjs.cm.domain.usecase.login
 
-import com.indusjs.cm.domain.model.login.SignInResponse
+import SignInResponse
 import com.indusjs.cm.domain.repo.IUserRepository
-import com.indusjs.cm.repository.ILoginRepo
 import com.indusjs.cm.domain.usecase.base.BaseUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 

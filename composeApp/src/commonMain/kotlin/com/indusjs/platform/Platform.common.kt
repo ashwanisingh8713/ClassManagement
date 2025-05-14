@@ -7,3 +7,6 @@ sealed class Platform {
 }
 
 expect val platform: Platform
+
+
+expect fun showToast(message: String)
