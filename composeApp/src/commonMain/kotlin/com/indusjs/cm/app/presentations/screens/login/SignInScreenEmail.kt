@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -131,7 +132,9 @@ data class SignInState(
     val isPasswordValid: Boolean = true,
     val emailErrorMessage: String? = null,
     val passwordErrorMessage: String? = null,
-    val isSignInEnabled: Boolean = false
+    val isSignInEnabled: Boolean = false,
+    val isClientChecked: Boolean = false, // Added for Client checkbox
+    val isDeveloperChecked: Boolean = false // Added for Developer checkbox
 ) {
     fun updateEmail(newEmail: String): SignInState {
         return copy(email = newEmail, isEmailValid = true, emailErrorMessage = null)
@@ -149,6 +152,15 @@ data class SignInState(
             passwordErrorMessage = passwordErrorMessage,
             isSignInEnabled = isEmailValid && isPasswordValid && email.isNotEmpty() && password.isNotEmpty()
         )
+    }
+
+    // Modified update functions for checkboxes to handle mutual exclusion
+    fun updateClientChecked(isChecked: Boolean): SignInState {
+        return copy(isClientChecked = isChecked, isDeveloperChecked = if (isChecked) false else isDeveloperChecked)
+    }
+
+    fun updateDeveloperChecked(isChecked: Boolean): SignInState {
+        return copy(isDeveloperChecked = isChecked, isClientChecked = if (isChecked) false else isClientChecked)
     }
 }
 
@@ -257,6 +269,7 @@ fun SignInScreenE(navController: NavHostController,
                 }
                 else -> {}
             }
+
         }
     }
 
@@ -356,7 +369,38 @@ fun SignInScreenE(navController: NavHostController,
                 }
             },
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Added space before checkboxes
+
+        // Checkboxes for Client and Developer with mutual exclusion logic
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly // Distribute space between checkboxes
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = signInState.isClientChecked,
+                    onCheckedChange = { isChecked ->
+                        // If Client is checked, uncheck Developer
+                        signInState = signInState.updateClientChecked(isChecked)
+                    }
+                )
+                Text("Client")
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = signInState.isDeveloperChecked,
+                    onCheckedChange = { isChecked ->
+                        // If Developer is checked, uncheck Client
+                        signInState = signInState.updateDeveloperChecked(isChecked)
+                    }
+                )
+                Text("Developer")
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp)) // Added space after checkboxes
 
         Button(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
