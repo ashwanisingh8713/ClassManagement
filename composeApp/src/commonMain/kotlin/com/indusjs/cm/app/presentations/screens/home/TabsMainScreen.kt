@@ -2,6 +2,7 @@ package com.indusjs.cm.app.presentations.screens.home
 
 import SignInResponse
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,6 +56,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.getKoin
 
 val TabsMainScreen: String = "tabs_main_screen"
+val UserProfilecreen: String = "user_profile_screen"
 
 
 // Define data class for Bottom Navigation items
@@ -72,6 +74,10 @@ fun TabsScreen(navController: NavHostController) {
     val tab3Navigator:NavHostController = rememberNavController()
     val tab4Navigator:NavHostController = rememberNavController()
     val tab5Navigator:NavHostController = rememberNavController()
+
+    val onUserProfileClick:() -> Unit = {
+        navController.navigate(UserProfilecreen)
+    }
 
     val dataManager = getKoin().get<DataManager>()
     scope.launch {
@@ -98,7 +104,7 @@ fun TabsScreen(navController: NavHostController) {
     val selectedItem = remember { mutableStateOf(items[0]) }
         Scaffold(modifier = Modifier.height(1.dp), // here I need to check
             topBar = {
-                TopAppBarSection()
+                TopAppBarSection(onUserProfileClick)
                     /*if(topbarVisibility.value) {
                         TopAppBarSection()
                     }*/
@@ -154,7 +160,7 @@ fun TabsScreen(navController: NavHostController) {
 }
 
 @Composable
-fun TopAppBarSection() {
+fun TopAppBarSection(onUserProfileClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -171,6 +177,7 @@ fun TopAppBarSection() {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
+                    .clickable { onUserProfileClick() } // Navigate to user profile screen
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
