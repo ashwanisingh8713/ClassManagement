@@ -16,10 +16,12 @@ import androidx.navigation.compose.rememberNavController
 import classmanagement.composeapp.generated.resources.*
 import com.indusjs.cm.app.presentations.screens.home.TabsMainScreen
 import com.indusjs.cm.app.presentations.screens.home.TabsScreen
+import com.indusjs.cm.app.presentations.screens.home.UserProfilecreen
 import com.indusjs.cm.app.presentations.screens.login.LoginScreen
 import com.indusjs.cm.app.presentations.screens.login.SignInScreen
 import com.indusjs.cm.app.presentations.screens.login.SignInScreenE
 import com.indusjs.cm.app.presentations.screens.login.SignUpScreen
+import com.indusjs.cm.app.presentations.screens.profle.UserProfileScreen
 import com.indusjs.platform.DataManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -96,7 +98,11 @@ internal fun App(
                     TabsScreen(
                         navController = navController
                     )
-                    //BottomNavigationApp()
+                }
+                composable(route = UserProfilecreen) {
+                    UserProfileScreen(
+                        navController = navController
+                    )
                 }
             }
         },
