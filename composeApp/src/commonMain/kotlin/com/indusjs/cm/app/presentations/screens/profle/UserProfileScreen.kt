@@ -33,6 +33,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import classmanagement.composeapp.generated.resources.Res
+import classmanagement.composeapp.generated.resources.ic_parking
+import classmanagement.composeapp.generated.resources.ic_skills
+import classmanagement.composeapp.generated.resources.ic_projects
+
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import org.jetbrains.compose.resources.DrawableResource
@@ -46,8 +51,10 @@ public fun UserProfileScreen( navController: NavHostController,
     var name: String = "Name"
     var phoneNumber: String = "Phone Number"
     var email: String = "Email"
-    var societyName: String = "Society Name"
+    var location: String = "Location"
     var gateNo: String = "Gate No."
+    var skills: String = "Skills"
+    var projects: String = "Projects"
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,19 +73,36 @@ public fun UserProfileScreen( navController: NavHostController,
         Spacer(modifier = Modifier.height(8.dp))
         ProfileDetailItem(icon = Icons.Filled.Email, label = "Email", value = email)
         Spacer(modifier = Modifier.height(16.dp))
-        ProfileDetailItem(icon = Icons.Filled.Home, label = "Society Name", value = societyName)
+        ProfileDetailItem(drawableResource = Res.drawable.ic_skills, label = "Skills", value = skills)
+        Spacer(modifier = Modifier.height(16.dp))
+        ProfileDetailItem(drawableResource = Res.drawable.ic_projects, label = "Projects", value = projects)
+        Spacer(modifier = Modifier.height(16.dp))
+        ProfileDetailItem(icon = Icons.Filled.Home, label = "Location", value = location)
         Spacer(modifier = Modifier.height(8.dp))
         ProfileDetailItem(icon = Icons.Filled.LocationOn, label = "Gate No.", value = gateNo)
     }
 }
 
 @Composable
-fun ProfileDetailItem(icon: ImageVector, label: String, value: String) {
+fun ProfileDetailItem(icon: ImageVector? = null, drawableResource: DrawableResource? = null, label: String, value: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(imageVector = icon, contentDescription = label, modifier = Modifier.size(24.dp))
+        if(icon == null) {
+
+        } else {
+
+        }
+        icon?.let { Icon(imageVector = icon, contentDescription = label, modifier = Modifier.size(24.dp)) }
+        drawableResource?.let { Image(
+            painter = painterResource(drawableResource),
+            contentDescription = "Skills",
+            modifier = Modifier
+                .size(24.dp),
+            contentScale = ContentScale.Inside
+        )}
+
         Spacer(modifier = Modifier.width(16.dp))
         Column(horizontalAlignment = Alignment.Start) {
             Text(text = label, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
