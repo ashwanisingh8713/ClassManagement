@@ -14,23 +14,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import classmanagement.composeapp.generated.resources.*
-import com.indusjs.cm.app.presentations.screens.home.TabsMainScreen
 import com.indusjs.cm.app.presentations.screens.home.TabsScreen
-import com.indusjs.cm.app.presentations.screens.home.UserProfilecreen
 import com.indusjs.cm.app.presentations.screens.login.LoginScreen
-import com.indusjs.cm.app.presentations.screens.login.SignInScreen
 import com.indusjs.cm.app.presentations.screens.login.SignInScreenE
 import com.indusjs.cm.app.presentations.screens.login.SignUpScreen
 import com.indusjs.cm.app.presentations.screens.profle.UserProfileScreen
+import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.platform.DataManager
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.KoinContext
 import org.koin.compose.getKoin
-import kotlin.coroutines.CoroutineContext
 
 
 @Composable
@@ -80,7 +72,7 @@ internal fun App(
         content = {innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = if(isUserLoggedIn) TabsMainScreen else LoginScreen,
+                startDestination = if(isUserLoggedIn) NavigationRoute.TabsMainScreen.route else LoginScreen,
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
@@ -94,12 +86,12 @@ internal fun App(
                         navController = navController
                     )
                 }
-                composable(route = TabsMainScreen) {
+                composable(route = NavigationRoute.TabsMainScreen.route) {
                     TabsScreen(
                         navController = navController
                     )
                 }
-                composable(route = UserProfilecreen) {
+                composable(route = NavigationRoute.UserProfileScreen.route) {
                     UserProfileScreen(
                         navController = navController
                     )

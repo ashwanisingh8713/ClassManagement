@@ -35,7 +35,7 @@ import classmanagement.composeapp.generated.resources.forgot_password
 import classmanagement.composeapp.generated.resources.password
 import classmanagement.composeapp.generated.resources.sign_in
 import classmanagement.composeapp.generated.resources.sign_up
-import com.indusjs.cm.app.presentations.screens.home.TabsMainScreen
+import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.cm.app.viewmodels.login.SignInViewModel
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
@@ -50,7 +50,7 @@ fun LoginScreen(navController: NavHostController, signInViewModel:SignInViewMode
         signInViewModel.effect.collectLatest { effect->
             when(effect) {
                 is LoginContract.Effect.NavigateToSignUpScreen -> navController.navigate(SignUpScreen)
-                is LoginContract.Effect.NavigateToHomeScreen -> navController.navigate(TabsMainScreen) {
+                is LoginContract.Effect.NavigateToHomeScreen -> navController.navigate(NavigationRoute.TabsMainScreen.route) {
                     popUpTo(LoginScreen) {
                         inclusive = true
                     }

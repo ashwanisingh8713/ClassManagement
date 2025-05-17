@@ -48,6 +48,7 @@ import com.indusjs.cm.app.presentations.screens.home.tab2.Tab2Screen
 import com.indusjs.cm.app.presentations.screens.home.tab3.Tab3Screen
 import com.indusjs.cm.app.presentations.screens.home.tab4.Tab4Screen
 import com.indusjs.cm.app.presentations.screens.home.tab5.Tab5Screen
+import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.platform.DataManager
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -55,8 +56,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.getKoin
 
-val TabsMainScreen: String = "tabs_main_screen"
-val UserProfilecreen: String = "user_profile_screen"
+
 
 
 // Define data class for Bottom Navigation items
@@ -76,7 +76,7 @@ fun TabsScreen(navController: NavHostController) {
     val tab5Navigator:NavHostController = rememberNavController()
 
     val onUserProfileClick:() -> Unit = {
-        navController.navigate(UserProfilecreen)
+        navController.navigate(NavigationRoute.UserProfileScreen.route)
     }
 
     val dataManager = getKoin().get<DataManager>()

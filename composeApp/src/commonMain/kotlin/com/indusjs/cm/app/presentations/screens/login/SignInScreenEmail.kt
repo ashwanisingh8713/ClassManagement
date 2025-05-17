@@ -19,8 +19,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,16 +36,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import classmanagement.composeapp.generated.resources.Res
 import classmanagement.composeapp.generated.resources.ic_parking
 import com.indusjs.cm.app.model.ResourceUiState
-import com.indusjs.cm.app.presentations.screens.home.TabsMainScreen
+import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.cm.app.viewmodels.login.SignInViewModel
 import com.indusjs.platform.DataManager
-import com.indusjs.platform.showToast
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -229,7 +224,7 @@ fun SignInScreenE(navController: NavHostController,
                     withContext(Dispatchers.Main) {
                         // Using withContext on Main Thread,
                         // If we call "scope.launch" in same thread, it will not work
-                        navController.navigate(TabsMainScreen) {
+                        navController.navigate(NavigationRoute.TabsMainScreen.route) {
                             popUpTo(LoginScreen) {
                                 inclusive = true
                             }
