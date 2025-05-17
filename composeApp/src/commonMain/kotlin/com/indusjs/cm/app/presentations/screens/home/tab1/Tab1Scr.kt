@@ -46,10 +46,10 @@ import org.jetbrains.compose.resources.painterResource
 
 val TAB1_ROOT_PAGE: String = "TAB1_ROOT_PAGE"
 val TAB1_POST_PAGE: String = "TAB1_POST_PAGE"
-val TAB1_PAYMENT_PAGE: String = "TAB1_PAYMENT_PAGE"
-val TAB1_FACILITY_PAGE: String = "TAB1_FACILITY_PAGE"
-val TAB1_TENANT_PAGE: String = "TAB1_TENANT_PAGE"
-val TAB1_PARKING_PAGE: String = "TAB1_PARKING_PAGE"
+//val TAB1_PAYMENT_PAGE: String = "TAB1_PAYMENT_PAGE"
+//val TAB1_FACILITY_PAGE: String = "TAB1_FACILITY_PAGE"
+//val TAB1_TENANT_PAGE: String = "TAB1_TENANT_PAGE"
+//val TAB1_PARKING_PAGE: String = "TAB1_PARKING_PAGE"
 
 private fun showTopBar(topbarVisibility: MutableState<Boolean>, ) {
     topbarVisibility.value = true
@@ -62,107 +62,108 @@ private fun hideTopBar(topbarVisibility: MutableState<Boolean>, ) {
 @Composable
 fun Tab1Screen(tab1Navigator: NavHostController, topbarVisibility: MutableState<Boolean>) {
 
-    val onPostClick:() -> Unit = {
-        tab1Navigator.navigate(TAB1_POST_PAGE)
-        hideTopBar(topbarVisibility)
-    }
-    val onPaymentClick:() -> Unit = {
-        hideTopBar(topbarVisibility)
-        tab1Navigator.navigate(TAB1_PAYMENT_PAGE)
-    }
+//    val onPostClick:() -> Unit = {
+//        tab1Navigator.navigate(TAB1_POST_PAGE)
+//        hideTopBar(topbarVisibility)
+//   }
+//    val onPaymentClick:() -> Unit = {
+//        hideTopBar(topbarVisibility)
+//        tab1Navigator.navigate(TAB1_PAYMENT_PAGE)
+//    }
+//
+//    val onFacilityClick:() -> Unit = {
+//        hideTopBar(topbarVisibility)
+//        tab1Navigator.navigate(TAB1_FACILITY_PAGE)
+//    }
+//
+//    val onTenantClick:() -> Unit = {
+//        hideTopBar(topbarVisibility)
+//        tab1Navigator.navigate(TAB1_TENANT_PAGE)
+//    }
+//    val onParkingClick:() -> Unit = {
+//        hideTopBar(topbarVisibility)
+//        tab1Navigator.navigate(TAB1_PARKING_PAGE)
+//    }
+//
+//    NavHost(
+//        navController = tab1Navigator,
+//        startDestination = TAB1_ROOT_PAGE,
+//    ) {
+//        composable(TAB1_ROOT_PAGE) {
+//            SocietyManagementScreen(onPostClick = onPostClick, onPaymentClick = onPaymentClick,
+//                onFacilityClick = onFacilityClick, onTenantClick = onTenantClick, onParkingClick = onParkingClick)
+//        }
+//        composable(TAB1_POST_PAGE) {
+//            Tab1_PostScreen() {
+//                tab1Navigator.popBackStack()
+//                showTopBar(topbarVisibility)
+//            }
+//        }
+//        composable(TAB1_PAYMENT_PAGE) {
+//            Tab1_PaymentScreen() {
+//                showTopBar(topbarVisibility)
+//                tab1Navigator.popBackStack()
+//            }
+//        }
+//        composable(TAB1_FACILITY_PAGE) {
+//            Tab1_FacilityScreen() {
+//                showTopBar(topbarVisibility)
+//                tab1Navigator.popBackStack()
+//            }
+//        }
+//        composable(TAB1_TENANT_PAGE) {
+//            Tab1_TenantScreen() {
+//                showTopBar(topbarVisibility)
+//                tab1Navigator.popBackStack()
+//            }
+//        }
+//        composable(TAB1_PARKING_PAGE) {
+//            Tab1_ParkingScreen() {
+//                showTopBar(topbarVisibility)
+//                tab1Navigator.popBackStack()
+//            }
+//        }
+//    }
+//
+//}
 
-    val onFacilityClick:() -> Unit = {
-        hideTopBar(topbarVisibility)
-        tab1Navigator.navigate(TAB1_FACILITY_PAGE)
-    }
-
-    val onTenantClick:() -> Unit = {
-        hideTopBar(topbarVisibility)
-        tab1Navigator.navigate(TAB1_TENANT_PAGE)
-    }
-    val onParkingClick:() -> Unit = {
-        hideTopBar(topbarVisibility)
-        tab1Navigator.navigate(TAB1_PARKING_PAGE)
-    }
-
-    NavHost(
-        navController = tab1Navigator,
-        startDestination = TAB1_ROOT_PAGE,
-    ) {
-        composable(TAB1_ROOT_PAGE) {
-            SocietyManagementScreen(onPostClick = onPostClick, onPaymentClick = onPaymentClick,
-                onFacilityClick = onFacilityClick, onTenantClick = onTenantClick, onParkingClick = onParkingClick)
-        }
-        composable(TAB1_POST_PAGE) {
-            Tab1_PostScreen() {
-                tab1Navigator.popBackStack()
-                showTopBar(topbarVisibility)
-            }
-        }
-        composable(TAB1_PAYMENT_PAGE) {
-            Tab1_PaymentScreen() {
-                showTopBar(topbarVisibility)
-                tab1Navigator.popBackStack()
-            }
-        }
-        composable(TAB1_FACILITY_PAGE) {
-            Tab1_FacilityScreen() {
-                showTopBar(topbarVisibility)
-                tab1Navigator.popBackStack()
-            }
-        }
-        composable(TAB1_TENANT_PAGE) {
-            Tab1_TenantScreen() {
-                showTopBar(topbarVisibility)
-                tab1Navigator.popBackStack()
-            }
-        }
-        composable(TAB1_PARKING_PAGE) {
-            Tab1_ParkingScreen() {
-                showTopBar(topbarVisibility)
-                tab1Navigator.popBackStack()
-            }
-        }
-    }
-
+//@Composable
+//fun SocietyManagementScreen(onPostClick:() -> Unit = {}, onPaymentClick:() -> Unit = {},
+//                            onFacilityClick:()->Unit = {}, onTenantClick:()->Unit = {},
+//                            onParkingClick:()->Unit = {}) {
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(Color.White)
+//    ) {
+//        QuickActionsBar(onPostClick = onPostClick, onPaymentClick = onPaymentClick,
+//            onFacilityClick = onFacilityClick, onTenantClick = onTenantClick, onParkingClick = onParkingClick)
+//        TenantCard()
+//        Spacer(modifier = Modifier.weight(1f))
+//    }
 }
 
-@Composable
-fun SocietyManagementScreen(onPostClick:() -> Unit = {}, onPaymentClick:() -> Unit = {},
-                            onFacilityClick:()->Unit = {}, onTenantClick:()->Unit = {},
-                            onParkingClick:()->Unit = {}) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        QuickActionsBar(onPostClick = onPostClick, onPaymentClick = onPaymentClick,
-            onFacilityClick = onFacilityClick, onTenantClick = onTenantClick, onParkingClick = onParkingClick)
-        TenantCard()
-        Spacer(modifier = Modifier.weight(1f))
-    }
-}
 
 
-
-@Composable
-fun QuickActionsBar(onPostClick:() -> Unit, onPaymentClick:() -> Unit, onFacilityClick:()->Unit = {}, onTenantClick:()->Unit = {},
-                    onParkingClick:()->Unit = {}) {
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceAround,
-        contentPadding = PaddingValues(horizontal = 16.dp)
-    ) {
-        item { QuickActionItem(onClick = onPostClick, icon = Res.drawable.ic_post, label = "Post") } // Replace with actual icon resource
-        item { QuickActionItem(onClick = onPaymentClick, icon =  Res.drawable.ic_payments, label = "Payments") } // Replace with actual icon resource
-        item { QuickActionItem(onClick = onFacilityClick, icon =  Res.drawable.ic_facility, label = "Facility") } // Replace with actual icon resource
-        item { QuickActionItem(onClick = onTenantClick, icon =  Res.drawable.ic_tenant, label = "Tenant") } // Replace with actual icon resource
-        item { QuickActionItem(onClick = onParkingClick, icon =  Res.drawable.ic_parking, label = "Parking") } // Replace with actual icon resource
-        // Add more quick actions as needed
-    }
-}
+//@Composable
+//fun QuickActionsBar(onPostClick:() -> Unit, onPaymentClick:() -> Unit, onFacilityClick:()->Unit = {}, onTenantClick:()->Unit = {},
+//                    onParkingClick:()->Unit = {}) {
+//    LazyRow(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(vertical = 8.dp),
+//        horizontalArrangement = Arrangement.SpaceAround,
+//        contentPadding = PaddingValues(horizontal = 16.dp)
+//    )
+//  {
+////        item { QuickActionItem(onClick = onPostClick, icon = Res.drawable.ic_post, label = "Post") } // Replace with actual icon resource
+////        item { QuickActionItem(onClick = onPaymentClick, icon =  Res.drawable.ic_payments, label = "Payments") } // Replace with actual icon resource
+////        item { QuickActionItem(onClick = onFacilityClick, icon =  Res.drawable.ic_facility, label = "Facility") } // Replace with actual icon resource
+////        item { QuickActionItem(onClick = onTenantClick, icon =  Res.drawable.ic_tenant, label = "Tenant") } // Replace with actual icon resource
+////        item { QuickActionItem(onClick = onParkingClick, icon =  Res.drawable.ic_parking, label = "Parking") } // Replace with actual icon resource
+////        // Add more quick actions as needed
+// }
+//}
 
 @Composable
 fun QuickActionItem( onClick:() -> Unit = {},
@@ -245,14 +246,22 @@ fun TenantCard() {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Outlined.Person, contentDescription = "Tenants", tint = Color(0xFF1976D2)) // Blue icon
+                    Icon(
+                        Icons.Outlined.Person,
+                        contentDescription = "Tenants",
+                        tint = Color(0xFF1976D2)
+                    ) // Blue icon
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(text = "Tenants: 5", style = MaterialTheme.typography.bodyMedium)
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.Outlined.Settings, contentDescription = "Vehicles", tint = Color(0xFF1976D2)) // Blue icon
+                    Icon(
+                        Icons.Outlined.Settings,
+                        contentDescription = "Vehicles",
+                        tint = Color(0xFF1976D2)
+                    ) // Blue icon
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(text = "Vehicles: 5", style = MaterialTheme.typography.bodyMedium)
                 }
@@ -260,4 +269,5 @@ fun TenantCard() {
         }
     }
 }
+
 

@@ -26,19 +26,20 @@ class SignInViewModel(private val signInUseCase: SignInUseCase, coroutineScope: 
             is LoginContract.Event.OnGoToHomeScreenClick -> {
                 setEffect{LoginContract.Effect.NavigateToHomeScreen(event.signInResponse)}
             }
-            is LoginContract.Event.OnLoginClick -> signInRequest(event.email, event.password)
-            is LoginContract.Event.OnTryCheckAgainClick -> signInRequest(event.email, event.password)
+            is LoginContract.Event.OnLoginClick -> signInRequest(event.email, event.password, event.role)
+            is LoginContract.Event.OnTryCheckAgainClick -> signInRequest(event.email, event.password, event.role)
             is LoginContract.Event.OnForgotPasswordClick -> {}
             else ->{}
         }
     }
 
-    private fun signInRequest(email:String, password:String) {
+    private fun signInRequest(email:String, password:String, role: String) {
         setState { copy(loginResponse = ResourceUiState.Loading) }
         coroutineScope.launch {
             signInUseCase(LoginRequestBody(
                 email = email,
-                password = password
+                password = password,
+                role = role
             )).onSuccess<SignInResponse> { it ->
                 println("Ashwani SignInViewModel Success...")
                 setState { copy(loginResponse = ResourceUiState.Success(it)) }

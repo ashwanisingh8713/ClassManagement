@@ -147,7 +147,7 @@ fun TabsScreen(navController: NavHostController) {
                     color = Color.White
                 ) {
                     when (selectedItem.value.tabId) {
-                        0 -> Tab1Screen(tab1Navigator, topbarVisibility)
+                       // 0 -> Tab1Screen(tab1Navigator, topbarVisibility)
                         1 -> Tab2Screen(tab2Navigator, topbarVisibility)
                         2 -> Tab3Screen(tab3Navigator, topbarVisibility)
                         3 -> Tab4Screen(tab4Navigator, topbarVisibility)

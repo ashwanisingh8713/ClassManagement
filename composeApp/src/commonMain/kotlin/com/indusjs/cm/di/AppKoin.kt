@@ -112,7 +112,7 @@ val ktorModule = module {
         }
     }
 
-    single { "http://147.79.70.208" }
+    single { "http://192.168.1.8:8080" }
 }
 
 fun initKoin(module: Module) {

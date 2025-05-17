@@ -94,7 +94,7 @@ fun LoginScreen(navController: NavHostController, signInViewModel:SignInViewMode
             Spacer(modifier = Modifier.height(10.dp))
             Button(
                 onClick = {
-                        signInViewModel.setEvent(LoginContract.Event.OnLoginClick(email = "", password = ""))
+                        signInViewModel.setEvent(LoginContract.Event.OnLoginClick(email = "", password = "", role = ""))
                           },
                 modifier = Modifier.fillMaxWidth()
             ) {

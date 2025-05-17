@@ -9,12 +9,12 @@ import com.indusjs.cm.domain.model.login.SignUpResponse
 
 interface LoginContract {
     sealed interface Event : IUiEvent {
-        data class OnTryCheckAgainClick(val email: String, val password: String) : Event
+        data class OnTryCheckAgainClick(val email: String, val password: String, val role: String) : Event
         data object OnSignUpClick : Event
         data object OnForgotPasswordClick : Event
         data object OnBackToSignInClick : Event
         data class OnGoToHomeScreenClick(val signInResponse: SignInResponse) : Event
-        data class OnLoginClick(val email: String, val password: String) : Event
+        data class OnLoginClick(val email: String, val password: String, val role: String) : Event
     }
 
     data class SignInState(

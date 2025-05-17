@@ -126,8 +126,8 @@ data class PasswordValidationResult(
 
 
 data class SignInState(
-    val email: String = "radhika@gmail.com",
-    val password: String = "admin",
+    val email: String = "User_1@gmail.com",
+    val password: String = "Passwd_1",
     val isEmailValid: Boolean = true,
     val isPasswordValid: Boolean = true,
     val emailErrorMessage: String? = null,
@@ -217,7 +217,7 @@ fun SignInScreenE(navController: NavHostController,
                     }
 
                     // Save User Data & Token
-                    effect.signInResponse.token?.let { token ->
+                    effect.signInResponse.data?.token?.let { token ->
                         // Save User Token
                         scope.launch {
                             val jsonString = Json.encodeToString(SignInResponse.serializer(), effect.signInResponse)
@@ -265,7 +265,7 @@ fun SignInScreenE(navController: NavHostController,
                 }
                 is ResourceUiState.Error -> {
                     // Show Error
-                    println("Ashwani Error...")
+                    println("Ashwani Error...${state.loginResponse.message}")
                 }
                 else -> {}
             }
@@ -275,7 +275,7 @@ fun SignInScreenE(navController: NavHostController,
 
 
     val onSignInClicked: (String, String) -> Unit = { email, password ->
-        signInViewModel.setEvent(LoginContract.Event.OnLoginClick(email, password))
+        signInViewModel.setEvent(LoginContract.Event.OnLoginClick(email, password, "client"))
     }
 
 
