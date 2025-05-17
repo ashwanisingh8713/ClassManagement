@@ -1,6 +1,9 @@
 package com.indusjs.cm.app.presentations.screens.profle
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
@@ -21,6 +25,7 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -55,16 +62,96 @@ public fun UserProfileScreen( navController: NavHostController,
     var gateNo: String = "Gate No."
     var skills: String = "Skills"
     var projects: String = "Projects"
+
+    val onBackClick:() -> Unit = {
+        navController.navigateUp()
+    }
+
+    Scaffold(
+        modifier = Modifier.height(1.dp),
+        topBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color(0xFF90CAF9), Color(0xFFE1F5FE))
+                        )
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+            // Top bar background
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                // Top bar content
+                Row {
+                    // Back button
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .size(24.dp)
+                            .background(Color.Transparent)
+                            .clip(CircleShape)
+                            .background(Color.Transparent)
+                            .clickable { onBackClick() }
+                    )
+                    Text(
+                        text = "User Profile",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+        }
+        },
+        content = { innerPadding ->
+            UserProfileContent(
+                modifier = Modifier.padding(innerPadding),
+                name = name,
+                phoneNumber = phoneNumber,
+                email = email,
+                location = location,
+                gateNo = gateNo,
+                skills = skills,
+                projects = projects
+            )
+        }
+        )
+
+
+}
+
+@Composable
+private fun UserProfileContent(
+    modifier: Modifier,
+    name: String,
+    phoneNumber: String,
+    email: String,
+    location: String,
+    gateNo: String,
+    skills: String,
+    projects: String
+) {
+    // Content of the UserProfileScreen
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(26.dp))
+
         // Shared Profile Image
         NetworkProfileImageWithState(imageUrl = "https://th-i.thgim.com/public/incoming/ysmy06/article69580810.ece/alternates/LANDSCAPE_1200/20250512016L.jpg",
             modifier = Modifier.padding(16.dp))
-        Spacer(modifier = Modifier.height(16.dp))
 
         // User Details
         ProfileDetailItem(icon = Icons.Filled.Person, label = "Name", value = name)
