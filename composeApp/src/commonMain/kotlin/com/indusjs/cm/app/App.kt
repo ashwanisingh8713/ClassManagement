@@ -3,20 +3,15 @@ package com.indusjs.cm.app
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import classmanagement.composeapp.generated.resources.*
 import com.indusjs.cm.app.presentations.screens.home.TabsScreen
-import com.indusjs.cm.app.presentations.screens.login.LoginScreen
 import com.indusjs.cm.app.presentations.screens.login.SignInScreenE
 import com.indusjs.cm.app.presentations.screens.login.SignUpScreen
 import com.indusjs.cm.app.presentations.screens.profle.UserProfileScreen
@@ -74,13 +69,13 @@ internal fun App(
         content = {innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = if(isUserLoggedIn) NavigationRoute.TabsMainScreen.route else LoginScreen,
+                startDestination = if(isUserLoggedIn) NavigationRoute.TabsMainScreen.route else NavigationRoute.SignInScreen.route,
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(innerPadding)
             ) {
-                composable(route = LoginScreen) {
+                composable(route = NavigationRoute.SignInScreen.route) {
                     SignInScreenE(navController = navController)
                 }
                 composable(route = SignUpScreen) {

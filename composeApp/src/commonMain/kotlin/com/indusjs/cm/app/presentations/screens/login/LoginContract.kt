@@ -5,6 +5,7 @@ import com.indusjs.cm.app.model.ResourceUiState
 import com.indusjs.cm.app.presentations.mvi.IUiEffect
 import com.indusjs.cm.app.presentations.mvi.IUiEvent
 import com.indusjs.cm.app.presentations.mvi.IUiState
+import com.indusjs.cm.data.repo.UserType
 import com.indusjs.cm.domain.model.login.SignUpResponse
 
 interface LoginContract {
@@ -14,7 +15,7 @@ interface LoginContract {
         data object OnForgotPasswordClick : Event
         data object OnBackToSignInClick : Event
         data class OnGoToHomeScreenClick(val signInResponse: SignInResponse) : Event
-        data class OnLoginClick(val email: String, val password: String) : Event
+        data class OnLoginClick(val email: String, val password: String, val userType: UserType) : Event
     }
 
     data class SignInState(

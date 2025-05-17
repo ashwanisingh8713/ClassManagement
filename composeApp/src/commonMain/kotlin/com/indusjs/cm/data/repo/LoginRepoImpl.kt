@@ -46,5 +46,13 @@ class LoginRepoImpl(private val endPoint: String,
 @Serializable
 data class LoginRequestBody(
     val email: String,
-    val password: String
+    val password: String,
+    val userType:UserType = UserType.None,
 )
+
+@Serializable
+sealed class  UserType {
+    object Security : UserType()
+    object Residential : UserType()
+    object None : UserType()
+}

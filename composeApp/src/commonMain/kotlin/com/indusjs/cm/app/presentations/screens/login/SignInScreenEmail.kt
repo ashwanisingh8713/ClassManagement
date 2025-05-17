@@ -42,6 +42,7 @@ import classmanagement.composeapp.generated.resources.ic_parking
 import com.indusjs.cm.app.model.ResourceUiState
 import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.cm.app.viewmodels.login.SignInViewModel
+import com.indusjs.cm.data.repo.UserType
 import com.indusjs.platform.DataManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -128,8 +129,8 @@ data class SignInState(
     val emailErrorMessage: String? = null,
     val passwordErrorMessage: String? = null,
     val isSignInEnabled: Boolean = false,
-    val isClientChecked: Boolean = false, // Added for Client checkbox
-    val isDeveloperChecked: Boolean = false // Added for Developer checkbox
+    val isSecurityChecked: Boolean = false, // Added for Client checkbox
+    val isResidentialChecked: Boolean = true // Added for Developer checkbox
 ) {
     fun updateEmail(newEmail: String): SignInState {
         return copy(email = newEmail, isEmailValid = true, emailErrorMessage = null)
@@ -151,11 +152,11 @@ data class SignInState(
 
     // Modified update functions for checkboxes to handle mutual exclusion
     fun updateClientChecked(isChecked: Boolean): SignInState {
-        return copy(isClientChecked = isChecked, isDeveloperChecked = if (isChecked) false else isDeveloperChecked)
+        return copy(isSecurityChecked = isChecked, isResidentialChecked = if (isChecked) false else isResidentialChecked)
     }
 
     fun updateDeveloperChecked(isChecked: Boolean): SignInState {
-        return copy(isDeveloperChecked = isChecked, isClientChecked = if (isChecked) false else isClientChecked)
+        return copy(isResidentialChecked = isChecked, isSecurityChecked = if (isChecked) false else isSecurityChecked)
     }
 }
 
@@ -220,12 +221,13 @@ fun SignInScreenE(navController: NavHostController,
                             dataManager.saveUserToken(token)
                         }
                     }
+
                     // Launching the Tab Main screen
                     withContext(Dispatchers.Main) {
                         // Using withContext on Main Thread,
                         // If we call "scope.launch" in same thread, it will not work
                         navController.navigate(NavigationRoute.TabsMainScreen.route) {
-                            popUpTo(LoginScreen) {
+                            popUpTo(NavigationRoute.SignInScreen.route) {
                                 inclusive = true
                             }
                         }
@@ -269,12 +271,23 @@ fun SignInScreenE(navController: NavHostController,
     }
 
 
-    val onSignInClicked: (String, String) -> Unit = { email, password ->
-        signInViewModel.setEvent(LoginContract.Event.OnLoginClick(email, password))
+    val onSignInClicked: (SignInState) -> Unit = { signInState ->
+        if(!signInState.isSecurityChecked && !signInState.isResidentialChecked) {
+            // TODO, show toast message
+        } else {
+            val userType =
+                if (signInState.isSecurityChecked) UserType.Security else UserType.Residential
+            // Call the ViewModel function to handle sign-in
+            signInViewModel.setEvent(
+                LoginContract.Event.OnLoginClick(
+                    email = signInState.email,
+                    password = signInState.password, userType = userType
+                )
+            )
+        }
     }
 
-
-
+    // Holds state of the sign-in form
     var signInState by remember { mutableStateOf(SignInState()) }
 
     Column(
@@ -376,30 +389,33 @@ fun SignInScreenE(navController: NavHostController,
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
-                    checked = signInState.isClientChecked,
+                    checked = signInState.isSecurityChecked,
                     onCheckedChange = { isChecked ->
-                        // If Client is checked, uncheck Developer
+                        // If Security is checked, uncheck Developer
                         signInState = signInState.updateClientChecked(isChecked)
                     }
                 )
-                Text("Client")
+                Text("Security")
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
-                    checked = signInState.isDeveloperChecked,
+                    checked = signInState.isResidentialChecked,
                     onCheckedChange = { isChecked ->
-                        // If Developer is checked, uncheck Client
+                        // If Residential is checked, uncheck Client
                         signInState = signInState.updateDeveloperChecked(isChecked)
                     }
                 )
-                Text("Developer")
+                Text("Residential")
             }
         }
-        Spacer(modifier = Modifier.height(16.dp)) // Added space after checkboxes
 
+        // Added space after checkboxes
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Sign In Button
         Button(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
-            onClick = { onSignInClicked(signInState.email, signInState.password) },
+            onClick = { onSignInClicked(signInState) },
             enabled = signInState.isSignInEnabled,
         ) {
             Text("Sign In")
