@@ -54,6 +54,9 @@ import org.jetbrains.compose.resources.painterResource
 public fun UserProfileScreen( navController: NavHostController,
     // Composable lambda for the shared image
 ) {
+
+    println("Ashwani UserProfileScreen called")
+
     val profileImage: @Composable () -> Unit
     var name: String = "Name"
     var phoneNumber: String = "Phone Number"
@@ -64,6 +67,7 @@ public fun UserProfileScreen( navController: NavHostController,
     var projects: String = "Projects"
 
     val onBackClick:() -> Unit = {
+        println("Ashwani UserProfileScreen Back Button is pressed")
         navController.navigateUp()
     }
 

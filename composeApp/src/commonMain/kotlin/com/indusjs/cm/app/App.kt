@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,6 +42,7 @@ internal fun App(
     // Also, can you make it with Flow for reactive programming?
     // Also, can you make it with ViewModel for MVI architecture?
     // Also, can you make it with LiveData for reactive programming?
+
 
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -88,7 +90,7 @@ internal fun App(
                 }
                 composable(route = NavigationRoute.TabsMainScreen.route) {
                     TabsScreen(
-                        navController = navController
+                        navController = navController, true
                     )
                 }
                 composable(route = NavigationRoute.UserProfileScreen.route) {
