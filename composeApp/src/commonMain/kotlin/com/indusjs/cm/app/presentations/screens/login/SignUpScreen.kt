@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import classmanagement.composeapp.generated.resources.Res
+import classmanagement.composeapp.generated.resources.back_button
 import classmanagement.composeapp.generated.resources.email
 import classmanagement.composeapp.generated.resources.enter_your_password
 import classmanagement.composeapp.generated.resources.password
@@ -46,6 +47,7 @@ import compose.icons.feathericons.GitBranch
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import androidx.compose.material3.Checkbox // Added for checkboxes
 
 val SignUpScreen:String = "signup_screen"
 
@@ -70,6 +72,10 @@ fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewMo
             val username = remember { mutableStateOf(TextFieldValue()) }
             val password = remember { mutableStateOf(TextFieldValue()) }
 
+            // State for the new checkboxes
+            val isClientChecked = remember { mutableStateOf(false) }
+            val isDeveloperChecked = remember { mutableStateOf(false) }
+
             Text(
                 text = stringResource(Res.string.sign_up),
                 style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive)
@@ -92,10 +98,46 @@ fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewMo
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(10.dp)) // Spacer before checkboxes
+
+            // --- Start of Checkbox Section ---
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), // Added padding for alignment
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly // Distribute space between checkboxes
+            ) {
+                // Client Checkbox
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(
+                        checked = isClientChecked.value,
+                        onCheckedChange = { isChecked ->
+                            isClientChecked.value = isChecked
+                            if (isChecked) {
+                                isDeveloperChecked.value = false // Uncheck developer if client is checked
+                            }
+                        }
+                    )
+                    Text("Client")
+                }
+                // Developer Checkbox
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(
+                        checked = isDeveloperChecked.value,
+                        onCheckedChange = { isChecked ->
+                            isDeveloperChecked.value = isChecked
+                            if (isChecked) {
+                                isClientChecked.value = false // Uncheck client if developer is checked
+                            }
+                        }
+                    )
+                    Text("Developer")
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp)) // Spacer after checkboxes
+            // --- End of Checkbox Section ---
+
             Button(
                 onClick = {
-
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -107,13 +149,13 @@ fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewMo
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row {
-                    Icon(
-                        imageVector = FeatherIcons.ArrowLeft,
-                        contentDescription = null,
-                        modifier = Modifier.padding(end = 4.dp)
-                    )
+//                    Icon(
+//                        imageVector = FeatherIcons.ArrowLeft,
+//                        contentDescription = null,
+//                        modifier = Modifier.padding(end = 4.dp)
+//                    )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(modifier = Modifier.padding(top = 2.dp), text = stringResource(Res.string.sign_in))
+                    Text(modifier = Modifier.padding(top = 2.dp), text = "Go back to Sign In")
                 }
             }
 

@@ -441,6 +441,7 @@ fun SignInScreenE(navController: NavHostController,
             TextButton(
                 onClick = {
                     // Navigate to sign up screen
+                    navController.navigate(SignUpScreen)
                     println("Navigate to Sign Up")
                 }
             ) {
