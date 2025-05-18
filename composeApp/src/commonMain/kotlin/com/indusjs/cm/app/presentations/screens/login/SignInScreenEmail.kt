@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import classmanagement.composeapp.generated.resources.Res
 import classmanagement.composeapp.generated.resources.ic_parking
+import com.indusjs.cm.app.composables.showAlertDialog
 import com.indusjs.cm.app.model.ResourceUiState
 import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.cm.app.viewmodels.login.SignInViewModel
@@ -198,8 +199,21 @@ fun SignInScreenE(navController: NavHostController,
 
     val scope = rememberCoroutineScope()
 
+    var openDialog = remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
     // Get DataManager instance from Koin
     val dataManager = getKoin().get<DataManager>()
+
+
+
+    if(openDialog.value) {
+        showAlertDialog(
+            openDialog = openDialog,
+            title = "Error",
+            message = errorMessage.toString()
+        )
+    }
 
     // UI-Effect
     signInViewModel.coroutineScope.launch {
@@ -261,8 +275,9 @@ fun SignInScreenE(navController: NavHostController,
                     println("Ashwani Idle...")
                 }
                 is ResourceUiState.Error -> {
-                    // Show Error
-                    println("Ashwani Error...")
+                    errorMessage = state.loginResponse.message ?: "Unknown Error"
+                    openDialog.value = true
+
                 }
                 else -> {}
             }

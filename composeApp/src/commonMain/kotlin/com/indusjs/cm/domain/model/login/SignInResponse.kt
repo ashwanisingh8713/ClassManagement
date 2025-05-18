@@ -22,7 +22,7 @@ data class User(
     val lastName: String,
     val livesHere: Boolean,
     val managementDesignation: String,
-    val mobileNumber: Long,
+    val mobileNumber: String,
     val password: String,
     val photo: String? = null,
     val primaryContact: Boolean,

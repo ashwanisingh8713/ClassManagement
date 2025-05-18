@@ -1,5 +1,8 @@
 package com.indusjs.platform
 
+import SignInResponse
+import kotlinx.serialization.json.Json
+
 class DataManager(private val dataStorage: IDataStorage, private val settingsStorage: ISettingsStorage) {
 
     suspend fun saveUserLoggedIn(boolean: Boolean) {
@@ -27,8 +30,8 @@ class DataManager(private val dataStorage: IDataStorage, private val settingsSto
     suspend fun saveUserData(userData: String) {
         dataStorage.saveData("user_data", userData)
     }
-    suspend fun getUserData(): String? {
-        return dataStorage.loadData("user_data")
+    suspend fun getUserData(): SignInResponse? {
+        return Json.decodeFromString<SignInResponse>(dataStorage.loadData("user_data") ?: "")
     }
 
     suspend fun saveAppTheme(theme: String) {

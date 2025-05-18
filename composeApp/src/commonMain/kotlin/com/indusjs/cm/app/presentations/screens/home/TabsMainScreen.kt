@@ -92,13 +92,8 @@ fun TabsScreen(navController: NavHostController, isUserLoggedIn:Boolean) {
 
     val dataManager = getKoin().get<DataManager>()
     scope.launch {
-        val userDataJson = dataManager.getUserData()
-        if (userDataJson != null) {
-            val user = Json.decodeFromString<SignInResponse>(userDataJson)
-            println("User Data: $userDataJson $user")
-        } else {
-            println("No user data found.")
-        }
+        val userData:SignInResponse? = dataManager.getUserData()
+
     }
 
 
