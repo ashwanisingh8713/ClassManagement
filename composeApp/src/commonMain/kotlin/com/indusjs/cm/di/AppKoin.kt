@@ -1,6 +1,5 @@
 package com.indusjs.cm.di
 
-import com.indusjs.cm.app.viewmodels.login.ForgotPasswordViewModel
 import com.indusjs.cm.app.viewmodels.login.SignInViewModel
 import com.indusjs.cm.app.presentations.screens.login.SignUpViewModel
 import com.indusjs.cm.app.viewmodels.profile.EditProfileViewModel
@@ -51,7 +50,6 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
 
 
 val viewModelModule: Module = module {
-    factory { ForgotPasswordViewModel() }
     factory { SignInViewModel(get(), get()) }
     factory { SignUpViewModel(get()) }
     factory { EditProfileViewModel(get()) }

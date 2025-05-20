@@ -3,9 +3,11 @@ package com.indusjs.cm.app.presentations.screens.profle
 import SignInResponse
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
@@ -16,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +29,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import com.indusjs.cm.app.presentations.theme.AppTheme
 import com.indusjs.cm.app.presentations.theme.topbarColor
+import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.cm.app.viewmodels.login.SignInViewModel
 import com.indusjs.platform.DataManager
 import kotlinx.coroutines.launch
@@ -46,9 +50,6 @@ fun UserProfileScreen(
     navController: NavHostController
 ) {
 
-    // Title for the top bar
-    val title = "User Profile"
-
     var name by remember { mutableStateOf("") } // Changed to a more realistic placeholder
     var phoneNumber by remember { mutableStateOf("") } // Changed to a more realistic placeholder
     var email by remember { mutableStateOf("") } // Changed to a more realistic placeholder
@@ -57,6 +58,7 @@ fun UserProfileScreen(
 
     val dataManager = getKoin().get<DataManager>()
     val scope = rememberCoroutineScope()
+
     scope.launch {
         val userData:SignInResponse? = dataManager.getUserData()
         userData?.let {
@@ -70,10 +72,26 @@ fun UserProfileScreen(
         }
     }
 
-
+    // Define the onBackClick function to handle back navigation
     val onBackClick: () -> Unit = {
         println("Ashwani UserProfileScreen Back Button is pressed") // Keep the original print for now
         navController.navigateUp()
+    }
+
+    // Define the onLogoutClick function to handle logout
+    val onLogoutClick: () -> Unit = {
+        println("Ashwani UserProfileScreen Logout Button is pressed") // Keep the original print for now
+        // Clear user data
+        scope.launch {
+            dataManager.saveUserLoggedIn(false)
+            dataManager.clearUserToken();
+        }
+        // Navigate to the SignInScreen,
+        // clearing the back stack to avoid going back to the profile screen
+        navController.navigate(NavigationRoute.SignInScreen.route) {
+            popUpTo(NavigationRoute.TabsMainScreen.route) { inclusive = true }
+        }
+
     }
 
     // Use Scaffold for the basic screen structure (TopBar, Content, etc.)
@@ -81,7 +99,7 @@ fun UserProfileScreen(
         modifier = Modifier.height(1.dp),
         // Removed the incorrect height(1.dp) modifier from Scaffold
         topBar = {
-            UserProfileTopBar(onBackClick = onBackClick)
+            UserProfileTopBar(onBackClick = onBackClick, onLogoutClick = onLogoutClick)
         }
     ) { innerPadding ->
         // Apply the padding provided by Scaffold to the content
@@ -99,14 +117,14 @@ fun UserProfileScreen(
 }
 
 @Composable
-fun UserProfileTopBar(onBackClick: () -> Unit) {
+fun UserProfileTopBar(onBackClick: () -> Unit, onLogoutClick:()->Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(TopBarHeight)
             .background(brush = Brush.verticalGradient(topbarColor)), // Apply horizontal padding here
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween // Use SpaceBetween if you had content on both ends
+        //horizontalArrangement = Arrangement.SpaceEvenly // Use SpaceBetween if you had content on both ends
     ) {
         // Back button and title
         Row(modifier = Modifier.padding(start = ScreenPadding), verticalAlignment = Alignment.CenterVertically) {
@@ -126,6 +144,18 @@ fun UserProfileTopBar(onBackClick: () -> Unit) {
             )
         }
         // Add more elements here if needed on the right side of the top bar
+        Spacer(modifier = Modifier.weight(1f).height(TopBarHeight))
+        // Logout button
+        Box(modifier = Modifier.height(TopBarHeight/2).width(TopBarHeight+TopBarHeight/2).clickable { onLogoutClick() }
+            .border(width = 1.dp, color = Gray, shape = RoundedCornerShape(10.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+        Text(
+            text = "Logout",
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), // Use titleMedium for title
+            color = MaterialTheme.colorScheme.onSurface // Use appropriate color from theme
+        )}
+        Spacer(modifier = Modifier.width(ScreenPadding))
     }
 }
 

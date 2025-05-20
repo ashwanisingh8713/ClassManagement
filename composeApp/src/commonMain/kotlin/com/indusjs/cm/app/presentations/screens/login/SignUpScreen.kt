@@ -41,13 +41,10 @@ import classmanagement.composeapp.generated.resources.sign_up
 import compose.icons.AllIcons
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ArrowLeft
-import compose.icons.feathericons.Feather
-import compose.icons.feathericons.GitBranch
 import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
-val SignUpScreen:String = "signup_screen"
 
 @Composable
 fun SignUpScreen(navController: NavHostController, signUpViewModel: SignUpViewModel = koinInject<SignUpViewModel>()) {

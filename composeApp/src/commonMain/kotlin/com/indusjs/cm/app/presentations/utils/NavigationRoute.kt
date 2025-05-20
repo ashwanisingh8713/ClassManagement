@@ -8,6 +8,9 @@ object NavigationRoute {
     object SignUpScreen {
         val route = "sign_up_screen"
     }
+    object ForgotPasswordScreen {
+        val route = "forgot_password_screen"
+    }
 
     object TabsMainScreen {
         val route = "tabs_main_screen"

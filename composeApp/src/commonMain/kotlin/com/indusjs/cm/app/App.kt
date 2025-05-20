@@ -12,7 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.indusjs.cm.app.presentations.screens.home.TabsScreen
-import com.indusjs.cm.app.presentations.screens.login.SignInScreenE
+import com.indusjs.cm.app.presentations.screens.login.ForgotPasswordScreen
+import com.indusjs.cm.app.presentations.screens.login.SignInScreen
 import com.indusjs.cm.app.presentations.screens.login.SignUpScreen
 import com.indusjs.cm.app.presentations.screens.profle.UserProfileScreen
 import com.indusjs.cm.app.presentations.utils.NavigationRoute
@@ -76,10 +77,15 @@ internal fun App(
                     .padding(innerPadding)
             ) {
                 composable(route = NavigationRoute.SignInScreen.route) {
-                    SignInScreenE(navController = navController)
+                    SignInScreen(navController = navController)
                 }
-                composable(route = SignUpScreen) {
+                composable(route = NavigationRoute.SignUpScreen.route) {
                     SignUpScreen(
+                        navController = navController
+                    )
+                }
+                composable(route = NavigationRoute.ForgotPasswordScreen.route) {
+                    ForgotPasswordScreen(
                         navController = navController
                     )
                 }

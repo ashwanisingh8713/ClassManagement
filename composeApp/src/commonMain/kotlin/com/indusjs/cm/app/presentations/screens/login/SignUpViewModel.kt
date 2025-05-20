@@ -1,7 +1,7 @@
 package com.indusjs.cm.app.presentations.screens.login
 
 import com.indusjs.cm.app.model.ResourceUiState
-import com.indusjs.cm.app.presentations.mvi.MviBaseViewModel
+import com.indusjs.cm.app.viewmodels.mvi.MviBaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
