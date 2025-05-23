@@ -6,7 +6,6 @@ import com.indusjs.cm.domain.model.login.SignUpResponse
 import com.indusjs.cm.repository.ILoginRepo
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
@@ -20,15 +19,9 @@ class LoginRepoImpl(private val endPoint: String,
                     private val httpClient: HttpClient):ILoginRepo {
     override suspend fun signIn(param: Any?): SignInResponse {
         val bodyParam = param as? LoginRequestBody
-        val email = bodyParam?.email
-        val password = bodyParam?.password
-        var role = bodyParam?.role
-        if(role.isNullOrEmpty()) {
-            role = "client"
-        }
-       val response: HttpResponse = httpClient.get() {
-            url("$endPoint/login?email=$email&password=$password&role=$role")
-            //setBody(bodyParam)
+       val response: HttpResponse = httpClient.post() {
+            url("$endPoint/api/auth/login")
+            setBody(bodyParam)
             contentType(ContentType.Application.Json)
         }
         if(response.status.isSuccess()) {
@@ -54,5 +47,12 @@ class LoginRepoImpl(private val endPoint: String,
 data class LoginRequestBody(
     val email: String,
     val password: String,
-    val role: String
+    val userType:UserType = UserType.None,
 )
+
+@Serializable
+sealed class  UserType {
+    object Security : UserType()
+    object Residential : UserType()
+    object None : UserType()
+}

@@ -3,8 +3,6 @@ package com.indusjs.cm.app
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -13,24 +11,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import classmanagement.composeapp.generated.resources.*
-import com.indusjs.cm.app.presentations.screens.home.TabsMainScreen
 import com.indusjs.cm.app.presentations.screens.home.TabsScreen
-import com.indusjs.cm.app.presentations.screens.home.UserProfilecreen
-import com.indusjs.cm.app.presentations.screens.login.LoginScreen
+import com.indusjs.cm.app.presentations.screens.login.ForgotPasswordScreen
 import com.indusjs.cm.app.presentations.screens.login.SignInScreen
-import com.indusjs.cm.app.presentations.screens.login.SignInScreenE
 import com.indusjs.cm.app.presentations.screens.login.SignUpScreen
 import com.indusjs.cm.app.presentations.screens.profle.UserProfileScreen
+import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.platform.DataManager
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.KoinContext
 import org.koin.compose.getKoin
-import kotlin.coroutines.CoroutineContext
 
 
 @Composable
@@ -49,6 +38,7 @@ internal fun App(
     // Also, can you make it with Flow for reactive programming?
     // Also, can you make it with ViewModel for MVI architecture?
     // Also, can you make it with LiveData for reactive programming?
+
 
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -80,26 +70,31 @@ internal fun App(
         content = {innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = if(isUserLoggedIn) TabsMainScreen else LoginScreen,
+                startDestination = if(isUserLoggedIn) NavigationRoute.TabsMainScreen.route else NavigationRoute.SignInScreen.route,
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(innerPadding)
             ) {
-                composable(route = LoginScreen) {
-                    SignInScreenE(navController = navController)
+                composable(route = NavigationRoute.SignInScreen.route) {
+                    SignInScreen(navController = navController)
                 }
-                composable(route = SignUpScreen) {
+                composable(route = NavigationRoute.SignUpScreen.route) {
                     SignUpScreen(
                         navController = navController
                     )
                 }
-                composable(route = TabsMainScreen) {
-                    TabsScreen(
+                composable(route = NavigationRoute.ForgotPasswordScreen.route) {
+                    ForgotPasswordScreen(
                         navController = navController
                     )
                 }
-                composable(route = UserProfilecreen) {
+                composable(route = NavigationRoute.TabsMainScreen.route) {
+                    TabsScreen(
+                        navController = navController, true
+                    )
+                }
+                composable(route = NavigationRoute.UserProfileScreen.route) {
                     UserProfileScreen(
                         navController = navController
                     )

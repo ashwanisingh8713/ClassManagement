@@ -2,19 +2,20 @@ package com.indusjs.cm.app.presentations.screens.login
 
 import SignInResponse
 import com.indusjs.cm.app.model.ResourceUiState
-import com.indusjs.cm.app.presentations.mvi.IUiEffect
-import com.indusjs.cm.app.presentations.mvi.IUiEvent
-import com.indusjs.cm.app.presentations.mvi.IUiState
+import com.indusjs.cm.app.viewmodels.mvi.IUiEffect
+import com.indusjs.cm.app.viewmodels.mvi.IUiEvent
+import com.indusjs.cm.app.viewmodels.mvi.IUiState
+import com.indusjs.cm.data.repo.UserType
 import com.indusjs.cm.domain.model.login.SignUpResponse
 
 interface LoginContract {
     sealed interface Event : IUiEvent {
-        data class OnTryCheckAgainClick(val email: String, val password: String, val role: String) : Event
+        data class OnTryCheckAgainClick(val email: String, val password: String) : Event
         data object OnSignUpClick : Event
-        data object OnForgotPasswordClick : Event
+        data class OnForgotPasswordClick(val email: String) : Event
         data object OnBackToSignInClick : Event
         data class OnGoToHomeScreenClick(val signInResponse: SignInResponse) : Event
-        data class OnLoginClick(val email: String, val password: String, val role: String) : Event
+        data class OnLoginClick(val email: String, val password: String, val userType: UserType) : Event
     }
 
     data class SignInState(

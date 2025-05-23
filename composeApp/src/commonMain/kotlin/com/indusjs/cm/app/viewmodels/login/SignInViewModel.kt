@@ -3,7 +3,7 @@ package com.indusjs.cm.app.viewmodels.login
 
 import SignInResponse
 import com.indusjs.cm.app.model.ResourceUiState
-import com.indusjs.cm.app.presentations.mvi.MviBaseViewModel
+import com.indusjs.cm.app.viewmodels.mvi.MviBaseViewModel
 import com.indusjs.cm.app.presentations.screens.login.LoginContract
 import com.indusjs.cm.data.repo.LoginRequestBody
 import com.indusjs.cm.domain.usecase.login.SignInUseCase
@@ -23,23 +23,22 @@ class SignInViewModel(private val signInUseCase: SignInUseCase, coroutineScope: 
     override fun handleEvent(event: LoginContract.Event) {
         when(event) {
             is LoginContract.Event.OnSignUpClick -> setEffect{LoginContract.Effect.NavigateToSignUpScreen}
+            is LoginContract.Event.OnForgotPasswordClick -> setEffect{LoginContract.Effect.NavigateToForgotPasswordScreen(event.email)}
             is LoginContract.Event.OnGoToHomeScreenClick -> {
                 setEffect{LoginContract.Effect.NavigateToHomeScreen(event.signInResponse)}
             }
-            is LoginContract.Event.OnLoginClick -> signInRequest(event.email, event.password, event.role)
-            is LoginContract.Event.OnTryCheckAgainClick -> signInRequest(event.email, event.password, event.role)
-            is LoginContract.Event.OnForgotPasswordClick -> {}
+            is LoginContract.Event.OnLoginClick -> signInRequest(event.email, event.password)
+            is LoginContract.Event.OnTryCheckAgainClick -> signInRequest(event.email, event.password)
             else ->{}
         }
     }
 
-    private fun signInRequest(email:String, password:String, role: String) {
+    private fun signInRequest(email:String, password:String) {
         setState { copy(loginResponse = ResourceUiState.Loading) }
         coroutineScope.launch {
             signInUseCase(LoginRequestBody(
                 email = email,
-                password = password,
-                role = role
+                password = password
             )).onSuccess<SignInResponse> { it ->
                 println("Ashwani SignInViewModel Success...")
                 setState { copy(loginResponse = ResourceUiState.Success(it)) }

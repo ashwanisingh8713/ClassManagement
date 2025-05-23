@@ -30,9 +30,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.NonSkippableComposable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +56,7 @@ import com.indusjs.cm.app.presentations.screens.home.tab2.Tab2Screen
 import com.indusjs.cm.app.presentations.screens.home.tab3.Tab3Screen
 import com.indusjs.cm.app.presentations.screens.home.tab4.Tab4Screen
 import com.indusjs.cm.app.presentations.screens.home.tab5.Tab5Screen
+import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.platform.DataManager
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -55,15 +64,17 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.getKoin
 
-val TabsMainScreen: String = "tabs_main_screen"
-val UserProfilecreen: String = "user_profile_screen"
+
 
 
 // Define data class for Bottom Navigation items
+@Stable
 private data class BottomNavItem(val tabId:Int, val title: String, val icon: androidx.compose.ui.graphics.vector.ImageVector, val route: String)
 
 @Composable
-fun TabsScreen(navController: NavHostController) {
+fun TabsScreen(navController: NavHostController, isUserLoggedIn:Boolean) {
+
+    println("Ashwani TabsMainScreen called $isUserLoggedIn")
 
     val scope = rememberCoroutineScope()
 
@@ -76,18 +87,13 @@ fun TabsScreen(navController: NavHostController) {
     val tab5Navigator:NavHostController = rememberNavController()
 
     val onUserProfileClick:() -> Unit = {
-        navController.navigate(UserProfilecreen)
+        navController.navigate(NavigationRoute.UserProfileScreen.route)
     }
 
     val dataManager = getKoin().get<DataManager>()
     scope.launch {
-        val userDataJson = dataManager.getUserData()
-        if (userDataJson != null) {
-            val user = Json.decodeFromString<SignInResponse>(userDataJson)
-            println("User Data: $userDataJson $user")
-        } else {
-            println("No user data found.")
-        }
+        val userData:SignInResponse? = dataManager.getUserData()
+
     }
 
 
@@ -101,20 +107,24 @@ fun TabsScreen(navController: NavHostController) {
     )
 
     // Use remember to survive configuration changes
-    val selectedItem = remember { mutableStateOf(items[0]) }
-        Scaffold(modifier = Modifier.height(1.dp), // here I need to check
+    var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
+
+
+    if(isUserLoggedIn) {
+        Scaffold(
+             modifier = Modifier.height(1.dp), // here I need to check
             topBar = {
                 TopAppBarSection(onUserProfileClick)
-                    /*if(topbarVisibility.value) {
+                /*if(topbarVisibility.value) {
                         TopAppBarSection()
                     }*/
-                 },
+            },
             // Bottom navigation bar
             bottomBar = {
                 NavigationBar(
                     modifier = Modifier.fillMaxWidth()//.height(56.dp),// here I need to check
                 ) {
-                    items.forEach { navigationItem ->
+                    items.forEachIndexed { index,navigationItem ->
                         NavigationBarItem(
                             icon = {
                                 androidx.compose.material3.Icon(
@@ -128,9 +138,9 @@ fun TabsScreen(navController: NavHostController) {
                                     fontSize = 9.sp
                                 )
                             }, // Reduced font size for labels
-                            selected = selectedItem.value == navigationItem,
+                            selected = selectedItemIndex == index,
                             onClick = {
-                                selectedItem.value = navigationItem // Update selected item
+                                selectedItemIndex = index // Update selected item
                             },
                             //Make the icon and text appear
                             alwaysShowLabel = true,
@@ -146,8 +156,8 @@ fun TabsScreen(navController: NavHostController) {
                         .fillMaxSize(),
                     color = Color.White
                 ) {
-                    when (selectedItem.value.tabId) {
-                       // 0 -> Tab1Screen(tab1Navigator, topbarVisibility)
+                    when (selectedItemIndex) {
+                        0 -> Tab1Screen(tab1Navigator, topbarVisibility)
                         1 -> Tab2Screen(tab2Navigator, topbarVisibility)
                         2 -> Tab3Screen(tab3Navigator, topbarVisibility)
                         3 -> Tab4Screen(tab4Navigator, topbarVisibility)
@@ -156,7 +166,7 @@ fun TabsScreen(navController: NavHostController) {
                 }
             }
         )
-
+    }
 }
 
 @Composable
@@ -201,5 +211,5 @@ fun TopAppBarSection(onUserProfileClick: () -> Unit) {
 @Preview
 @Composable
 fun DefaultPreview() {
-    TabsScreen(navController = rememberNavController())
+    TabsScreen(navController = rememberNavController(), true)
 }

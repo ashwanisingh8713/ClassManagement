@@ -1,142 +1,321 @@
 package com.indusjs.cm.app.presentations.screens.login
 
+
+import SignInResponse
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.navigation.NavHostController
 import classmanagement.composeapp.generated.resources.Res
 import classmanagement.composeapp.generated.resources.ic_parking
-import kotlinx.coroutines.CoroutineScope
+import com.indusjs.cm.app.composables.showAlertDialog
+import com.indusjs.cm.app.model.ResourceUiState
+import com.indusjs.cm.app.presentations.utils.NavigationRoute
+import com.indusjs.cm.app.viewmodels.login.SignInViewModel
+import com.indusjs.cm.data.repo.UserType
+import com.indusjs.platform.DataManager
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import androidx.compose.foundation.text.KeyboardOptions as KeyboardOptions1
+import org.koin.compose.getKoin
+
+// Regex for basic email validation.
+private val EMAIL_ADDRESS_REGEX = Regex(
+    "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+            "\\@" +
+            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+            "(" +
+            "\\." +
+            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+            ")+"
+)
+
+/**
+ * Utility object for input validation.
+ */
+object ValidationUtils {
+
+
+
+    /**
+     * Validates an email address.
+     * @param email The email string to validate.
+     * @return True if the email is valid, false otherwise.
+     */
+    fun isValidEmail(email: String): Boolean {
+        return email.isNotBlank() && EMAIL_ADDRESS_REGEX.matches(email)
+    }
+
+    /**
+     * Validates a password based on several criteria.
+     * @param password The password string to validate.
+     * @return A [PasswordValidationResult] indicating if the password is valid and a corresponding message.
+     */
+    fun isValidPassword(password: String): PasswordValidationResult {
+        if (password.isBlank()) {
+            return PasswordValidationResult(isValid = false, message = "Password cannot be empty.")
+        }
+        if (password.length < 8) {
+            return PasswordValidationResult(isValid = false, message = "Password must be at least 8 characters long.")
+        }
+        if (!password.any { it.isDigit() }) {
+            return PasswordValidationResult(isValid = false, message = "Password must contain at least one digit.")
+        }
+        if (!password.any { it.isUpperCase() }) {
+            return PasswordValidationResult(isValid = false, message = "Password must contain at least one uppercase letter.")
+        }
+        if (!password.any { it.isLowerCase() }) {
+            return PasswordValidationResult(isValid = false, message = "Password must contain at least one lowercase letter.")
+        }
+        if (password.any { it.isWhitespace() }) {
+            return PasswordValidationResult(isValid = false, message = "Password must not contain whitespace.")
+        }
+        if (!password.any { !it.isLetterOrDigit() }) {
+            return PasswordValidationResult(isValid = false, message = "Password must contain at least one special character (e.g., !@#\$%).")
+        }
+        return PasswordValidationResult(isValid = true)
+    }
+}
+
+/**
+ * Data class to hold the result of password validation.
+ * @property isValid True if the password meets all criteria, false otherwise.
+ * @property message An optional error message if validation fails.
+ */
+data class PasswordValidationResult(
+    val isValid: Boolean,
+    val message: String? = null
+)
+
+
+data class SignInState(
+    val email: String = "radhika@gmail.com",
+    val password: String = "admin",
+    val isEmailValid: Boolean = true,
+    val isPasswordValid: Boolean = true,
+    val emailErrorMessage: String? = null,
+    val passwordErrorMessage: String? = null,
+    val isSignInEnabled: Boolean = false,
+    val isSecurityChecked: Boolean = false, // Added for Client checkbox
+    val isResidentialChecked: Boolean = true // Added for Developer checkbox
+) {
+    fun updateEmail(newEmail: String): SignInState {
+        return copy(email = newEmail, isEmailValid = true, emailErrorMessage = null)
+    }
+
+    fun updatePassword(newPassword: String): SignInState {
+        return copy(password = newPassword, isPasswordValid = true, passwordErrorMessage = null)
+    }
+
+    fun updateValidation(isEmailValid: Boolean, emailErrorMessage: String? = null, isPasswordValid: Boolean, passwordErrorMessage: String? = null): SignInState {
+        return copy(
+            isEmailValid = isEmailValid,
+            emailErrorMessage = emailErrorMessage,
+            isPasswordValid = isPasswordValid,
+            passwordErrorMessage = passwordErrorMessage,
+            isSignInEnabled = isEmailValid && isPasswordValid && email.isNotEmpty() && password.isNotEmpty()
+        )
+    }
+
+    // Modified update functions for checkboxes to handle mutual exclusion
+    fun updateClientChecked(isChecked: Boolean): SignInState {
+        return copy(isSecurityChecked = isChecked, isResidentialChecked = if (isChecked) false else isResidentialChecked)
+    }
+
+    fun updateDeveloperChecked(isChecked: Boolean): SignInState {
+        return copy(isResidentialChecked = isChecked, isSecurityChecked = if (isChecked) false else isSecurityChecked)
+    }
+}
+
+object SignInValidation {
+    fun validateEmail(email: String): String? {
+        if (email.isEmpty()) {
+            return "Email cannot be empty"
+        }
+        if (!isValidEmail(email)) {
+            return "Enter a valid email address"
+        }
+        return null
+    }
+
+    /**
+     * Validates an email address.
+     * @param email The email string to validate.
+     * @return True if the email is valid, false otherwise.
+     */
+    fun isValidEmail(email: String): Boolean {
+        return email.isNotBlank() && EMAIL_ADDRESS_REGEX.matches(email)
+    }
+
+    fun validatePassword(password: String): String? {
+        if (password.isEmpty()) {
+            return "Password cannot be empty"
+        }
+        if (password.length < 4) {
+            return "Password must be at least 6 characters long"
+        }
+        return null
+    }
+}
+
 
 @Composable
-fun SignInScreen() {
-    // State variables
-    var emailAddress by remember { mutableStateOf(TextFieldValue("")) }
-    var otp by remember { mutableStateOf(TextFieldValue("")) }
-    var isVerifying by remember { mutableStateOf(false) }
-    var isOTPSent by remember { mutableStateOf(false) }
-    var mobileNumberError by remember { mutableStateOf("") }
-    var otpError by remember { mutableStateOf("") }
-    var timerValue by remember { mutableStateOf(60) }
-    var isTimerRunning by remember { mutableStateOf(false)}
+fun SignInScreen(navController: NavHostController,
+                 signInViewModel: SignInViewModel = getKoin().get<SignInViewModel>()) {
 
-    val logo: Painter = painterResource(Res.drawable.ic_parking) // Replace with your actual logo
+    val scope = rememberCoroutineScope()
 
-    // Function to validate mobile number
-    /*fun validateMobileNumber(number: String): String {
-        return if (number.isEmpty()) {
-            "Valid email is required"
-        } else if (!number.matches(Regex("^[0-9]{10}$"))) {
-            "Invalid Email Address"
-        } else {
-            ""
-        }
-    }*/
+    var openDialog = remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
-    // Function to validate Email -  Kotlin Multiplatform version
-    fun validateEmail(emailValue: String): String {
-        return if (emailValue.isEmpty()) {
-            "Email is required"
-        } else if (!Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$").matches(emailValue)) {
-            "Invalid email address"
-        } else {
-            ""
-        }
+    // Get DataManager instance from Koin
+    val dataManager = getKoin().get<DataManager>()
+
+
+
+    if(openDialog.value) {
+        showAlertDialog(
+            openDialog = openDialog,
+            title = "Error",
+            message = errorMessage.toString()
+        )
     }
 
-    // Function to validate OTP
-    fun validateOTP(otpValue: String): String {
-        return if (otpValue.isEmpty()) {
-            "OTP is required"
-        } else if (otpValue.length != 6) {
-            "OTP must be 6 digits"
-        } else {
-            ""
-        }
-    }
+    // UI-Effect
+    signInViewModel.coroutineScope.launch {
+        signInViewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is LoginContract.Effect.NavigateToSignUpScreen -> {
+                    // Navigate to Sign Up screen
+                    scope.launch(Dispatchers.Main) {
+                        navController.navigate(NavigationRoute.SignUpScreen.route)
+                    }
+                }
+                is LoginContract.Effect.NavigateToForgotPasswordScreen -> {
+                    // Navigate to Forgot Password screen
+                    scope.launch(Dispatchers.Main) {
+                        navController.navigate(NavigationRoute.ForgotPasswordScreen.route)
+                    }
+                }
+                is LoginContract.Effect.NavigateToHomeScreen -> {
+                    // Save User logged In Status
+                    scope.launch {
+                        dataManager.saveUserLoggedIn(true)
+                    }
 
+                    // Save User Data & Token
+                    effect.signInResponse.token?.let { token ->
+                        // Save User Token
+                        scope.launch {
+                            val jsonString = Json.encodeToString(SignInResponse.serializer(), effect.signInResponse)
+                            dataManager.saveUserData(jsonString)
+                            dataManager.saveUserToken(token)
+                        }
+                    }
 
-    // Function to simulate sending OTP
-    suspend fun sendOTP() {
-        mobileNumberError = validateEmail(emailAddress.text)
-        if (mobileNumberError.isEmpty()) {
-            isVerifying = true
-            // Simulate network delay
-            delay(2000) // Simulate a 2-second delay
-            isOTPSent = true
-            isVerifying = false
-//            startTimer()
-        }
-    }
+                    // Launching the Tab Main screen
+                    withContext(Dispatchers.Main) {
+                        // Using withContext on Main Thread,
+                        // If we call "scope.launch" in same thread, it will not work
+                        navController.navigate(NavigationRoute.TabsMainScreen.route) {
+                            popUpTo(NavigationRoute.SignInScreen.route) {
+                                inclusive = true
+                            }
+                        }
+                    }
 
-    // Function to simulate verifying OTP
-    suspend fun verifyOTP() {
-        otpError = validateEmail(otp.text)
-        if (otpError.isEmpty()) {
-            isVerifying = true
-            // Simulate network delay
-            delay(2000) // Simulate a 2-second delay
-            isVerifying = false
-            // Simulate successful sign-in
-            println("Successful Sign In! Mobile Number: ${emailAddress.text}, OTP: ${otp.text}")
-            //  Here you would typically navigate to the next screen or show a success message.
-        }
-    }
-
-    // Function to start the timer
-    fun startTimer() {
-        isTimerRunning = true
-        timerValue = 60
-        CoroutineScope(Dispatchers.Default).launch { // Use the appropriate dispatcher
-            while (timerValue > 0 && isTimerRunning) {
-                delay(1000)
-                timerValue--
-            }
-            isTimerRunning = false
-        }
-    }
-    // Function to resend OTP
-    fun resendOTP() {
-        if (!isTimerRunning) {
-            CoroutineScope(Dispatchers.Default).launch {
-                sendOTP()
+                }
+                else -> {}
             }
         }
     }
 
-    // Column to hold the entire content
+    // UI-State
+    signInViewModel.coroutineScope.launch {
+        signInViewModel.uiState.collectLatest { state->
+            when(state.loginResponse) {
+                is ResourceUiState.Success -> {
+                    println("Ashwani Success...")
+                    // Show Success
+                    signInViewModel.setEvent(LoginContract.Event.OnGoToHomeScreenClick(state.loginResponse.data))
+                }
+                is ResourceUiState.Loading -> {
+                    // Show loading indicator
+                    println("Ashwani Loading...")
+                }
+                is ResourceUiState.Empty -> {
+                    // Show Empty
+                    println("Ashwani Empty...")
+                }
+                is ResourceUiState.Idle -> {
+                    // Show loading indicator
+                    println("Ashwani Idle...")
+                }
+                is ResourceUiState.Error -> {
+                    errorMessage = state.loginResponse.message ?: "Unknown Error"
+                    openDialog.value = true
+                }
+                else -> {}
+            }
+
+        }
+    }
+
+
+    val onSignInClicked: (SignInState) -> Unit = { signInState ->
+        if(!signInState.isSecurityChecked && !signInState.isResidentialChecked) {
+            // TODO, show toast message
+        } else {
+            val userType =
+                if (signInState.isSecurityChecked) UserType.Security else UserType.Residential
+            // Call the ViewModel function to handle sign-in
+            signInViewModel.setEvent(
+                LoginContract.Event.OnLoginClick(
+                    email = signInState.email,
+                    password = signInState.password, userType = userType
+                )
+            )
+        }
+    }
+
+    // Holds state of the sign-in form
+    var signInState by remember { mutableStateOf(SignInState()) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -148,14 +327,15 @@ fun SignInScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
         // App Logo
         Image(
-            painter = logo,
+            painter = painterResource(Res.drawable.ic_parking),
             contentDescription = "App Logo",
             modifier = Modifier
                 .size(120.dp)
                 .padding(bottom = 16.dp),
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.Inside
         )
 
         // Welcome Text
@@ -178,120 +358,93 @@ fun SignInScreen() {
             ),
             modifier = Modifier.padding(bottom = 32.dp)
         )
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Mobile Number Text Field
         OutlinedTextField(
-            value = emailAddress,
-            onValueChange = { emailAddress = it },
-            label = { Text("Enter valid email", color = Color(0xFF3F51B5)) },
-            leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email", tint = Color(0xFF3F51B5)) },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
+            value = signInState.email,
+            onValueChange = { newEmail ->
+                signInState = signInState.updateEmail(newEmail)
+                signInState = signInState.updateValidation(
+                    isEmailValid = SignInValidation.validateEmail(newEmail) == null,
+                    emailErrorMessage = SignInValidation.validateEmail(newEmail),
+                    isPasswordValid = signInState.isPasswordValid,
+                    passwordErrorMessage = signInState.passwordErrorMessage
+                )
+            },
+            label = { Text("Email") },
+            isError = !signInState.isEmailValid,
+            supportingText = {
+                if (!signInState.isEmailValid && signInState.emailErrorMessage != null) {
+                    Text(signInState.emailErrorMessage!!)
+                }
+            },
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
+            value = signInState.password,
+            onValueChange = { newPassword ->
+                signInState = signInState.updatePassword(newPassword)
+                signInState = signInState.updateValidation(
+                    isPasswordValid = SignInValidation.validatePassword(newPassword) == null,
+                    passwordErrorMessage = SignInValidation.validatePassword(newPassword),
+                    isEmailValid = signInState.isEmailValid,
+                    emailErrorMessage = signInState.emailErrorMessage
+                )
+            },
+            label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            isError = !signInState.isPasswordValid,
+            supportingText = {
+                if (!signInState.isPasswordValid && signInState.passwordErrorMessage != null) {
+                    Text(text = signInState.passwordErrorMessage!!)
+                }
+            },
+        )
+        Spacer(modifier = Modifier.height(16.dp)) // Added space before checkboxes
+
+        // Checkboxes for Client and Developer with mutual exclusion logic
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp),
-//                .clip(RoundedCornerShape(12.dp)),
-            /*colors = TextFieldDefaults.colors(
-                contai = Color(0xFF3F51B5),
-                unfocusedBorderColor = Color(0xFF9FA8DA),
-                cursorColor = Color(0xFF3F51B5),
-                textColor = Color.Black
-            ),*/
-            textStyle = TextStyle(fontFamily = FontFamily.SansSerif, fontSize = 18.sp),
-            keyboardOptions = KeyboardOptions1(keyboardType = KeyboardType.Email), // Use Phone keyboard
-            isError = mobileNumberError.isNotEmpty()
-        )
-        if (mobileNumberError.isNotEmpty()) {
-            Text(
-                text = mobileNumberError,
-                color = MaterialTheme.colorScheme.error,
-                style = TextStyle(fontFamily = FontFamily.SansSerif, fontSize = 12.sp),
-                modifier = Modifier.padding(start = 32.dp)
-            )
-        }
-
-        // OTP Text Field
-        if (isOTPSent) {
-            OutlinedTextField(
-                value = otp,
-                onValueChange = { otp = it },
-                label = { Text("OTP", color = Color(0xFF3F51B5)) },
-                leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "OTP", tint = Color(0xFF3F51B5)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-                    .padding(top = 16.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                keyboardOptions = KeyboardOptions1(keyboardType = KeyboardType.Number),
-                /*colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color(0xFF3F51B5),
-                    unfocusedBorderColor = Color(0xFF9FA8DA),
-                    cursorColor = Color(0xFF3F51B5),
-                    textColor = Color.Black
-                ),*/
-                textStyle = TextStyle(fontFamily = FontFamily.SansSerif, fontSize = 18.sp),
-                isError = otpError.isNotEmpty()
-            )
-            if (otpError.isNotEmpty()) {
-                Text(
-                    text = otpError,
-                    color = MaterialTheme.colorScheme.error,
-                    style = TextStyle(fontFamily = FontFamily.SansSerif, fontSize = 12.sp),
-                    modifier = Modifier.padding(start = 32.dp)
-                )
-            }
-        }
-
-        // Send OTP Button / Verify OTP Button
-        Button(
-            onClick = {
-                CoroutineScope(Dispatchers.Default).launch {
-                    if (!isOTPSent) {
-                        sendOTP()
-                    } else {
-                        verifyOTP()
-                    }
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)
-                .padding(top = 32.dp)
-                .clip(RoundedCornerShape(12.dp)),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF3F51B5),
-                contentColor = Color.White
-            ),
-            elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 8.dp),
-            enabled = !isVerifying // Disable button during verification
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly // Distribute space between checkboxes
         ) {
-            Text(
-                text = if (!isOTPSent) "Submit Request" else "Verify Email",
-                style = TextStyle(fontFamily = FontFamily.SansSerif, fontSize = 20.sp)
-            )
-        }
-
-        // Timer Text
-        if (isOTPSent && isTimerRunning)
-        {
-            Text(
-                text = "Resend OTP in ${timerValue} seconds",
-                style = TextStyle(fontFamily = FontFamily.SansSerif, fontSize = 16.sp, color = Color.Red),
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
-        // Resend OTP Button
-        if (isOTPSent && !isTimerRunning) {
-            TextButton(
-                onClick = {
-                    resendOTP()
-                },
-                modifier = Modifier.padding(top = 8.dp)
-
-            ) {
-                Text(
-                    text = "Resend OTP",
-                    style = TextStyle(fontFamily = FontFamily.SansSerif, fontSize = 16.sp, color = Color(0xFF3F51B5))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = signInState.isSecurityChecked,
+                    onCheckedChange = { isChecked ->
+                        // If Security is checked, uncheck Developer
+                        signInState = signInState.updateClientChecked(isChecked)
+                    }
                 )
+                Text("Security")
             }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = signInState.isResidentialChecked,
+                    onCheckedChange = { isChecked ->
+                        // If Residential is checked, uncheck Client
+                        signInState = signInState.updateDeveloperChecked(isChecked)
+                    }
+                )
+                Text("Residential")
+            }
+        }
+
+        // Added space after checkboxes
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Sign In Button
+        Button(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
+            onClick = { onSignInClicked(signInState) },
+            enabled = signInState.isSignInEnabled,
+        ) {
+            Text("Sign In")
         }
 
         // Forgot Password Text
@@ -306,7 +459,14 @@ fun SignInScreen() {
             modifier = Modifier
                 .padding(top = 16.dp)
                 .fillMaxWidth()
+                .clickable {
+                    // Handle forgot password click
+                    signInViewModel.setEvent(
+                        LoginContract.Event.OnForgotPasswordClick(signInState.email)
+                    )
+                }
         )
+
 
         // Sign Up Text
         Row(
@@ -324,6 +484,9 @@ fun SignInScreen() {
             TextButton(
                 onClick = {
                     // Navigate to sign up screen
+                    signInViewModel.setEvent(
+                        LoginContract.Event.OnSignUpClick
+                    )
                     println("Navigate to Sign Up")
                 }
             ) {
@@ -339,11 +502,4 @@ fun SignInScreen() {
             }
         }
     }
-}
-
-// Preview Composable
-@Preview()
-@Composable
-fun DefaultPreview() {
-    SignInScreen()
 }
