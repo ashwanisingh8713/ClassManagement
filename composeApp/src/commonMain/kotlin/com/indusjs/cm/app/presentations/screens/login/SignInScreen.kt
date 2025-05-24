@@ -44,6 +44,7 @@ import com.indusjs.cm.app.composables.showAlertDialog
 import com.indusjs.cm.app.model.ResourceUiState
 import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.cm.app.viewmodels.login.SignInViewModel
+import com.indusjs.cm.data.repo.LoginRequestBody
 import com.indusjs.cm.data.repo.UserType
 import com.indusjs.platform.DataManager
 import kotlinx.coroutines.Dispatchers
@@ -302,14 +303,12 @@ fun SignInScreen(navController: NavHostController,
             // TODO, show toast message
         } else {
             val userType =
-                if (signInState.isSecurityChecked) UserType.Security else UserType.Residential
+                if (signInState.isSecurityChecked) UserType.Security().type else UserType.Residential().type
             // Call the ViewModel function to handle sign-in
             signInViewModel.setEvent(
                 LoginContract.Event.OnLoginClick(
-                    email = signInState.email,
-                    password = signInState.password, userType = userType
-                )
-            )
+                    LoginRequestBody(email = signInState.email, password = signInState.password, userType = userType)
+                ))
         }
     }
 
