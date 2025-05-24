@@ -1,17 +1,21 @@
 package com.indusjs.cm.di
 
+import com.indusjs.cm.app.presentations.screens.home.tab1.Tab1_ProjectsViewModel
 import com.indusjs.cm.app.viewmodels.login.SignInViewModel
 import com.indusjs.cm.app.presentations.screens.login.SignUpViewModel
 import com.indusjs.cm.app.viewmodels.profile.EditProfileViewModel
 import com.indusjs.cm.app.viewmodels.profile.GetProfileViewModel
 import com.indusjs.cm.data.repo.LoginRepoImpl
 import com.indusjs.cm.data.repo.ProfileRepoImpl
+import com.indusjs.cm.data.repo.ProjectRepoImpl
+import com.indusjs.cm.domain.repo.IProjectRepo
 import com.indusjs.cm.domain.repo.IUserRepository
 import com.indusjs.cm.domain.usecase.login.ForgotPasswordUseCase
 import com.indusjs.cm.domain.usecase.login.SignInUseCase
 import com.indusjs.cm.domain.usecase.login.SignUpUseCase
 import com.indusjs.cm.domain.usecase.profile.EditProfileUseCase
 import com.indusjs.cm.domain.usecase.profile.GetProfileUseCase
+import com.indusjs.cm.domain.usecase.projects.ProjectUseCase
 import com.indusjs.cm.repository.ILoginRepo
 import com.indusjs.cm.repository.IProfileRepo
 import com.indusjs.cm.repository.UserRepositoryImpl
@@ -51,6 +55,7 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
 
 val viewModelModule: Module = module {
     factory { SignInViewModel(get(), get()) }
+    factory { Tab1_ProjectsViewModel(get(), get()) }
     factory { SignUpViewModel(get()) }
     factory { EditProfileViewModel(get()) }
     factory { GetProfileViewModel(get()) }
@@ -62,6 +67,7 @@ val useCasesModule: Module = module {
     factory { SignUpUseCase(get(), get()) }
     factory { EditProfileUseCase(get(), get()) }
     factory { GetProfileUseCase(get(), get()) }
+    factory { ProjectUseCase(get(), get()) }
 }
 
 val baseUrlModule:Module = module {
@@ -73,8 +79,8 @@ val baseUrlModule:Module = module {
 val repositoryModule = module {
     single<IUserRepository> { UserRepositoryImpl(get(), get()) }
     single<ILoginRepo> {LoginRepoImpl(get() , get()) }
-//    single<ILoginRepo> { LoginRepoImpl(getKoin(){named("BaseUrl")}, get()) }
     single<IProfileRepo> { ProfileRepoImpl(get(), get()) }
+    single<IProjectRepo> { ProjectRepoImpl(get(), get()) }
 }
 
 val dispatcherModule = module {
@@ -110,7 +116,7 @@ val ktorModule = module {
         }
     }
 
-    single { "http://192.168.1.8:8080" }
+    single { "http://192.168.1.10:8080" }
 }
 
 fun initKoin(module: Module) {

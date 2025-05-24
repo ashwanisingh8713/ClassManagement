@@ -15,7 +15,6 @@ import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.indusjs.cm.app.presentations.screens.home.tab1.TAB1_ROOT_PAGE
 
 val TAB2_ROOT_PAGE: String = "TAB2_ROOT_PAGE"
 val TAB2_EMERGENCY_CONTACTS_PAGE: String = "emergency_contacts"

@@ -1,49 +1,59 @@
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class SignInResponse(
     val success: Boolean = true,
     val message: String = "",
-    val redirectUrl: String? = null,
-    val token: String? = null,
-    val user: User? = null
+    @SerialName("data")
+    val `data`: Data? = null,
+    @SerialName("profile")
+    val profile: UserProfile? = null
 )
 
 @Serializable
-data class User(
-    val addressId: Int,
-    val alternateCountryCode: Int,
-    val alternateNumber: Long,
-    val countryCode: Int,
+data class Data(
+    @SerialName("email")
     val email: String,
-    val firstName: String,
-    val isDeleted: Boolean,
-    val isManagementCommittee: Boolean,
-    val lastName: String,
-    val livesHere: Boolean,
-    val managementDesignation: String,
-    val mobileNumber: String,
+    @SerialName("message")
+    val message: String,
+    @SerialName("password")
     val password: String,
-    val photo: String? = null,
-    val primaryContact: Boolean,
-    val remarks: String? = null,
-    val role: Role,
-    val roleId: Int,
-    val salutation: String? = null,
-    val societyId: Int,
-    val status: String? = null,
-    val unitId: String? = null,
-    val userId: Int
+    @SerialName("role")
+    val role: String,
+    @SerialName("status")
+    val status: Boolean,
+    @SerialName("token")
+    val token: String
 )
 
 @Serializable
-data class Role(
-    val isDeleted: Boolean,
-    val occupancyStatus: String? = null,
-    val roleCategory: String? = null,
-    val roleId: Int,
-    val roleName: String? = null,
-    val userGroupId: String? = null
+data class UserProfile(
+    @SerialName("address")
+    val address: String,
+    @SerialName("available")
+    val available: String,
+    @SerialName("client_id")
+    val clientId: String,
+    @SerialName("name")
+    val name: String,
+    @SerialName("contact_email")
+    val contactEmail: String,
+    @SerialName("email")
+    val email: String,
+    @SerialName("experience")
+    val experience: Int,
+    @SerialName("linkedin")
+    val linkedin: String,
+    @SerialName("projects")
+    val projects: List<String>? = null,
+    @SerialName("skills")
+    val skills: List<String>? = null,
 )
+
+
+
+
+
 
 

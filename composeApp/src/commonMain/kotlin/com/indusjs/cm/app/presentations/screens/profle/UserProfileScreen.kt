@@ -1,6 +1,7 @@
 package com.indusjs.cm.app.presentations.screens.profle
 
 import SignInResponse
+import UserProfile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,11 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
 import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
-import com.indusjs.cm.app.presentations.theme.AppTheme
 import com.indusjs.cm.app.presentations.theme.topbarColor
 import com.indusjs.cm.app.presentations.utils.NavigationRoute
-import com.indusjs.cm.app.viewmodels.login.SignInViewModel
 import com.indusjs.platform.DataManager
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
@@ -60,14 +57,14 @@ fun UserProfileScreen(
     val scope = rememberCoroutineScope()
 
     scope.launch {
-        val userData:SignInResponse? = dataManager.getUserData()
+        val userData:UserProfile? = dataManager.getUserProfile()
         userData?.let {
-            it.user?.let {
-                name = it.firstName + " " + it.lastName
-                phoneNumber = it.mobileNumber
+            it.let {
+                name = it.name // Assuming clientName is the user's name
+                phoneNumber = it.contactEmail // Assuming contactNumber is the user's phone number
                 email = it.email
-                location = it.unitId ?: "N/A"
-                gateNo = "${it.addressId}"
+                location = it.address ?: "N/A"
+                gateNo = it.clientId // Assuming clientId is the gate number or similar identifier
             }
         }
     }

@@ -2,6 +2,7 @@ package com.indusjs.cm.app.presentations.screens.login
 
 
 import SignInResponse
+import UserProfile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,6 +45,7 @@ import com.indusjs.cm.app.composables.showAlertDialog
 import com.indusjs.cm.app.model.ResourceUiState
 import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.cm.app.viewmodels.login.SignInViewModel
+import com.indusjs.cm.data.repo.LoginRequestBody
 import com.indusjs.cm.data.repo.UserType
 import com.indusjs.platform.DataManager
 import kotlinx.coroutines.Dispatchers
@@ -124,15 +126,15 @@ data class PasswordValidationResult(
 
 
 data class SignInState(
-    val email: String = "radhika@gmail.com",
-    val password: String = "admin",
+    val email: String = "User_1@gmail.com",
+    val password: String = "Passwd_1",
     val isEmailValid: Boolean = true,
     val isPasswordValid: Boolean = true,
     val emailErrorMessage: String? = null,
     val passwordErrorMessage: String? = null,
     val isSignInEnabled: Boolean = false,
-    val isSecurityChecked: Boolean = false, // Added for Client checkbox
-    val isResidentialChecked: Boolean = true // Added for Developer checkbox
+    val isDeveloperChecked: Boolean = false, // Added for Client checkbox
+    val isClientChecked: Boolean = true // Added for Developer checkbox
 ) {
     fun updateEmail(newEmail: String): SignInState {
         return copy(email = newEmail, isEmailValid = true, emailErrorMessage = null)
@@ -154,11 +156,11 @@ data class SignInState(
 
     // Modified update functions for checkboxes to handle mutual exclusion
     fun updateClientChecked(isChecked: Boolean): SignInState {
-        return copy(isSecurityChecked = isChecked, isResidentialChecked = if (isChecked) false else isResidentialChecked)
+        return copy(isDeveloperChecked = isChecked, isClientChecked = if (isChecked) false else isClientChecked)
     }
 
     fun updateDeveloperChecked(isChecked: Boolean): SignInState {
-        return copy(isResidentialChecked = isChecked, isSecurityChecked = if (isChecked) false else isSecurityChecked)
+        return copy(isClientChecked = isChecked, isDeveloperChecked = if (isChecked) false else isDeveloperChecked)
     }
 }
 
@@ -238,15 +240,41 @@ fun SignInScreen(navController: NavHostController,
                         dataManager.saveUserLoggedIn(true)
                     }
 
-                    // Save User Data & Token
-                    effect.signInResponse.token?.let { token ->
+                    // Save User Type and Profile Data
+                    effect.signInResponse.data?.let { data ->
+                        // Save User Type
+                        scope.launch {
+                            dataManager.saveUserType(data.role)
+                        }
+
                         // Save User Token
                         scope.launch {
-                            val jsonString = Json.encodeToString(SignInResponse.serializer(), effect.signInResponse)
-                            dataManager.saveUserData(jsonString)
-                            dataManager.saveUserToken(token)
+                            dataManager.saveUserToken(data.token)
                         }
+
+                        // Save User Profile Data
+                        scope.launch {
+                            val jsonString = Json.encodeToString(
+                                UserProfile.serializer(),
+                                effect.signInResponse.profile ?: UserProfile(
+                                    address = "",
+                                    available = "",
+                                    clientId = "",
+                                    name = "",
+                                    contactEmail = data.email,
+                                    email = data.email,
+                                    experience = 0,
+                                    linkedin = "",
+                                    projects = emptyList(),
+                                    skills = emptyList()
+                                )
+                            )
+                            dataManager.saveUserProfile(jsonString)
+                        }
+
                     }
+
+
 
                     // Launching the Tab Main screen
                     withContext(Dispatchers.Main) {
@@ -298,16 +326,15 @@ fun SignInScreen(navController: NavHostController,
 
 
     val onSignInClicked: (SignInState) -> Unit = { signInState ->
-        if(!signInState.isSecurityChecked && !signInState.isResidentialChecked) {
+        if(!signInState.isDeveloperChecked && !signInState.isClientChecked) {
             // TODO, show toast message
         } else {
             val userType =
-                if (signInState.isSecurityChecked) UserType.Security else UserType.Residential
+                if (signInState.isDeveloperChecked) UserType.Developer().type else UserType.Client().type
             // Call the ViewModel function to handle sign-in
             signInViewModel.setEvent(
-                LoginContract.Event.OnLoginClick(
-                    email = signInState.email,
-                    password = signInState.password, userType = userType
+                LoginContract.Event.OnLoginClick( LoginRequestBody(signInState.email,
+                    signInState.password, userType)
                 )
             )
         }
@@ -415,23 +442,23 @@ fun SignInScreen(navController: NavHostController,
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
-                    checked = signInState.isSecurityChecked,
+                    checked = signInState.isDeveloperChecked,
                     onCheckedChange = { isChecked ->
                         // If Security is checked, uncheck Developer
                         signInState = signInState.updateClientChecked(isChecked)
                     }
                 )
-                Text("Security")
+                Text("Developer")
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
-                    checked = signInState.isResidentialChecked,
+                    checked = signInState.isClientChecked,
                     onCheckedChange = { isChecked ->
                         // If Residential is checked, uncheck Client
                         signInState = signInState.updateDeveloperChecked(isChecked)
                     }
                 )
-                Text("Residential")
+                Text("Client")
             }
         }
 

@@ -1,6 +1,7 @@
 package com.indusjs.cm.app.presentations.screens.home
 
 import SignInResponse
+import UserProfile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,11 +31,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.NonRestartableComposable
-import androidx.compose.runtime.NonSkippableComposable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,7 +58,6 @@ import com.indusjs.cm.app.presentations.screens.home.tab5.Tab5Screen
 import com.indusjs.cm.app.presentations.utils.NavigationRoute
 import com.indusjs.platform.DataManager
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.getKoin
@@ -79,6 +77,7 @@ fun TabsScreen(navController: NavHostController, isUserLoggedIn:Boolean) {
     val scope = rememberCoroutineScope()
 
     val topbarVisibility = remember { mutableStateOf(true) }
+    var name = remember { mutableStateOf("") }
 
     val tab1Navigator:NavHostController = rememberNavController()
     val tab2Navigator:NavHostController = rememberNavController()
@@ -92,14 +91,14 @@ fun TabsScreen(navController: NavHostController, isUserLoggedIn:Boolean) {
 
     val dataManager = getKoin().get<DataManager>()
     scope.launch {
-        val userData:SignInResponse? = dataManager.getUserData()
-
+        val userProfile:UserProfile? = dataManager.getUserProfile()
+        name.value = userProfile?.name ?: "Guest"
     }
 
 
     // Create a list of BottomNavItem
     val items = listOf(
-        BottomNavItem(0,"Tab1", Icons.Filled.AccountCircle, "tab1"),
+        BottomNavItem(0,"Projects", Icons.Filled.AccountCircle, "projects"),
         BottomNavItem(1,"Community", Icons.Filled.Person, "community"),
         BottomNavItem(2,"Home", Icons.Filled.Home, "cart"),
         BottomNavItem(3,"Search", Icons.Filled.Search, "search"),
@@ -109,15 +108,11 @@ fun TabsScreen(navController: NavHostController, isUserLoggedIn:Boolean) {
     // Use remember to survive configuration changes
     var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
 
-
     if(isUserLoggedIn) {
         Scaffold(
              modifier = Modifier.height(1.dp), // here I need to check
             topBar = {
-                TopAppBarSection(onUserProfileClick)
-                /*if(topbarVisibility.value) {
-                        TopAppBarSection()
-                    }*/
+                TopAppBarSection(onUserProfileClick, name)
             },
             // Bottom navigation bar
             bottomBar = {
@@ -170,7 +165,7 @@ fun TabsScreen(navController: NavHostController, isUserLoggedIn:Boolean) {
 }
 
 @Composable
-fun TopAppBarSection(onUserProfileClick: () -> Unit) {
+fun TopAppBarSection(onUserProfileClick: () -> Unit, name:MutableState<String>) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -191,7 +186,7 @@ fun TopAppBarSection(onUserProfileClick: () -> Unit) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                Text(text = "Person Name", style = MaterialTheme.typography.headlineSmall)
+                Text(text = name.value, style = MaterialTheme.typography.headlineSmall)
                 Text(text = "Society Name", style = MaterialTheme.typography.bodyMedium)
             }
         }
